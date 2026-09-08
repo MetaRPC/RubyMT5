@@ -1,20 +1,28 @@
-﻿require "minitest/autorun"
+require "minitest/autorun"
 require_relative "../lib/metarpc_mt5"
 
 class TestMetaRPCMT5Client < Minitest::Test
   def setup
-    @client = MetaRPC::MT5::Client.new("mt5.mrpc.pro", 443)
+    @client = MetaRPC::MT5::Client.new("mt5.mrpc.pro", 443, api_key: "mrpc_test_key")
   end
 
   def test_initial_state
     refute @client.connected?
     assert_equal "mt5.mrpc.pro", @client.host
     assert_equal 443, @client.port
+    assert_equal "mrpc_test_key", @client.api_key
+  end
+
+  def test_get_id_generation
+    token = @client.get_id(2005432, "password")
+    assert token
+    assert_equal token, @client.id
   end
 
   def test_connect_and_disconnect
     assert @client.connect(1001, "password")
     assert @client.connected?
+    assert @client.id
 
     @client.disconnect
     refute @client.connected?
