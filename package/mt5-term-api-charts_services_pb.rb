@@ -16,6 +16,10 @@ module Mt5TermApi
 
       rpc :OpenTerminalChartWithEa, ::Mt5TermApi::OpenTerminalChartWithEaRequest, ::Mt5TermApi::OpenTerminalChartWithEaReply
       rpc :GetEaParams, ::Mt5TermApi::GetEaParamsRequest, ::Mt5TermApi::GetEaParamsReply
+      rpc :AttachEa, ::Mt5TermApi::AttachEaRequest, ::Mt5TermApi::AttachEaReply
+      rpc :GetRunningEas, ::Mt5TermApi::GetRunningEasRequest, ::Mt5TermApi::GetRunningEasReply
+      rpc :GetEaLogs, ::Mt5TermApi::GetEaLogsRequest, ::Mt5TermApi::GetEaLogsReply
+      rpc :StopEa, ::Mt5TermApi::StopEaRequest, ::Mt5TermApi::StopEaReply
     end
 
     Stub = Service.rpc_stub_class
