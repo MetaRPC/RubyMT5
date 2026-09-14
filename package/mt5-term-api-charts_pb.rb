@@ -140,6 +140,20 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :ea_id, :string, 2
       optional :message, :string, 3
     end
+    add_message "mt5_term_api.StartEaRequest" do
+      optional :ea_id, :string, 1
+    end
+    add_message "mt5_term_api.StartEaReply" do
+      oneof :response do
+        optional :data, :message, 1, "mt5_term_api.StartEaData"
+        optional :error, :message, 2, "mt5_term_api.Error"
+      end
+    end
+    add_message "mt5_term_api.StartEaData" do
+      optional :success, :bool, 1
+      optional :ea_id, :string, 2
+      optional :message, :string, 3
+    end
     add_enum "mt5_term_api.EA_PARAM_TYPE" do
       value :EA_PARAM_TYPE_UNDEFINED, 0
       value :EA_PARAM_TYPE_STRING, 1
@@ -204,6 +218,9 @@ module Mt5TermApi
   StopEaRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.StopEaRequest").msgclass
   StopEaReply = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.StopEaReply").msgclass
   StopEaData = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.StopEaData").msgclass
+  StartEaRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.StartEaRequest").msgclass
+  StartEaReply = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.StartEaReply").msgclass
+  StartEaData = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.StartEaData").msgclass
   EA_PARAM_TYPE = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.EA_PARAM_TYPE").enummodule
   EnumOpenTerminalChartWithEaParameterType = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.EnumOpenTerminalChartWithEaParameterType").enummodule
   EnumOpenTerminalChartWithEaChatPeriod = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.EnumOpenTerminalChartWithEaChatPeriod").enummodule
