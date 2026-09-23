@@ -17,20 +17,6 @@ module Mt5TermApi
       self.unmarshal_class_method = :decode
       self.service_name = 'mt5_term_api.DemoAccount'
 
-      # Search for broker companies by name.
-      # Returns a list of matching companies from the wizard's ListView.
-      # [DefaultValues]
-      # {
-      #   "searchText": "MetaQuotes"
-      # }
-      rpc :FindCompanies, ::Mt5TermApi::GuiDemoFindCompaniesRequest, ::Mt5TermApi::GuiDemoFindCompaniesReply
-      # Get available servers and account types for a company.
-      # Navigates: company selection → demo account → reads dropdown options.
-      # [DefaultValues]
-      # {
-      #   "companyName": "MetaQuotes Ltd."
-      # }
-      rpc :ServersAndAccountTypes, ::Mt5TermApi::GuiDemoServersAndTypesRequest, ::Mt5TermApi::GuiDemoServersAndTypesReply
       # Open a demo account. Full wizard flow: search → select → fill form → register.
       # Returns login, password, and investor password for the new demo account.
       # [DefaultValues]
@@ -43,19 +29,9 @@ module Mt5TermApi
       #   "timeoutSeconds": "60"
       # }
       rpc :OpenDemoAccount, ::Mt5TermApi::GuiDemoOpenAccountRequest, ::Mt5TermApi::GuiDemoOpenAccountReply
-      # Same as OpenDemoAccount but streams real-time progress events.
-      # Does NOT require 'id' header — auto-picks any available terminal.
-      # Swagger does not support streaming — use /demo-account-stream interactive viewer.
-      # [DefaultValues]
-      # {
-      #   "company": "MetaQuotes Ltd.",
-      #   "firstName": "Test",
-      #   "lastName": "User",
-      #   "email": "test@test.com",
-      #   "phone": "+1234567890",
-      #   "timeoutSeconds": "60"
-      # }
-      rpc :OpenDemoAccountStream, ::Mt5TermApi::GuiDemoOpenAccountRequest, stream(::Mt5TermApi::DemoAccountStreamEvent)
+      # Interactive step-by-step demo account opening wizard.
+      # Bidirectional streaming session: search company -> select -> form schema -> submit -> 2FA (if any) -> completed.
+      rpc :DemoOpenAccountInteractive, stream(::Mt5TermApi::GuiDemoInteractiveClientMessage), stream(::Mt5TermApi::GuiDemoInteractiveServerMessage)
     end
 
     Stub = Service.rpc_stub_class

@@ -68,31 +68,6 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     add_message "mt5_term_api.GuiCloseDialogsReply" do
       optional :closed_count, :int32, 1
     end
-    add_message "mt5_term_api.GuiDemoFindCompaniesRequest" do
-      optional :search_text, :string, 1
-      optional :timeout_seconds, :int32, 2
-    end
-    add_message "mt5_term_api.GuiDemoFindCompaniesReply" do
-      optional :result_code, :int32, 1
-      repeated :companies, :message, 2, "mt5_term_api.GuiDemoCompany"
-      optional :debug_log, :string, 3
-    end
-    add_message "mt5_term_api.GuiDemoCompany" do
-      optional :name, :string, 1
-      optional :short_name, :string, 2
-    end
-    add_message "mt5_term_api.GuiDemoServersAndTypesRequest" do
-      optional :company_name, :string, 1
-      optional :timeout_seconds, :int32, 2
-    end
-    add_message "mt5_term_api.GuiDemoServersAndTypesReply" do
-      optional :result_code, :int32, 1
-      repeated :servers, :string, 2
-      repeated :account_types, :string, 3
-      repeated :deposits, :string, 4
-      repeated :leverages, :string, 5
-      optional :debug_log, :string, 6
-    end
     add_message "mt5_term_api.GuiDemoOpenAccountRequest" do
       optional :company, :string, 1
       optional :first_name, :string, 2
@@ -110,20 +85,6 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :investor, :string, 4
       optional :server, :string, 5
       optional :debug_log, :string, 6
-    end
-    add_message "mt5_term_api.GuiDemoEnumControlsRequest" do
-    end
-    add_message "mt5_term_api.GuiDemoEnumControlsReply" do
-      optional :control_count, :int32, 1
-      optional :controls_dump, :string, 2
-    end
-    add_message "mt5_term_api.GuiDemoProgressEvent" do
-      optional :step, :string, 1
-      optional :message, :string, 2
-      optional :elapsed_ms, :int64, 3
-      optional :is_final, :bool, 4
-      optional :account_data, :message, 5, "mt5_term_api.GuiDemoOpenAccountReply"
-      optional :error_code, :int32, 6
     end
     add_message "mt5_term_api.GuiDemoInteractiveClientMessage" do
       optional :session_id, :string, 1
@@ -273,16 +234,8 @@ module Mt5TermApi
   GuiLoginExError = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiLoginExError").msgclass
   GuiCloseDialogsRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiCloseDialogsRequest").msgclass
   GuiCloseDialogsReply = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiCloseDialogsReply").msgclass
-  GuiDemoFindCompaniesRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiDemoFindCompaniesRequest").msgclass
-  GuiDemoFindCompaniesReply = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiDemoFindCompaniesReply").msgclass
-  GuiDemoCompany = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiDemoCompany").msgclass
-  GuiDemoServersAndTypesRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiDemoServersAndTypesRequest").msgclass
-  GuiDemoServersAndTypesReply = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiDemoServersAndTypesReply").msgclass
   GuiDemoOpenAccountRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiDemoOpenAccountRequest").msgclass
   GuiDemoOpenAccountReply = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiDemoOpenAccountReply").msgclass
-  GuiDemoEnumControlsRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiDemoEnumControlsRequest").msgclass
-  GuiDemoEnumControlsReply = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiDemoEnumControlsReply").msgclass
-  GuiDemoProgressEvent = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiDemoProgressEvent").msgclass
   GuiDemoInteractiveClientMessage = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiDemoInteractiveClientMessage").msgclass
   GuiDemoInteractiveSearchCompany = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiDemoInteractiveSearchCompany").msgclass
   GuiDemoInteractiveSelectCompany = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.GuiDemoInteractiveSelectCompany").msgclass
