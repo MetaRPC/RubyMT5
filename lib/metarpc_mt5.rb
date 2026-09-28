@@ -1,5 +1,5 @@
-require "metarpc_mt5/version"
-require "metarpc_mt5/client"
+require_relative "metarpc_mt5/version"
+require_relative "metarpc_mt5/client"
 
 module MetaRPC
   module MT5
