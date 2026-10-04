@@ -28,6 +28,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     end
     add_message "mt5_term_api.GetTerminalJournalData" do
       repeated :rows, :message, 1, "mt5_term_api.TerminalJournalRow"
+      optional :diagnostics, :string, 2
     end
     add_message "mt5_term_api.TerminalJournalRow" do
       optional :time, :message, 1, "google.protobuf.Timestamp"
