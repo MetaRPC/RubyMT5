@@ -16,6 +16,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     add_message "mt5_term_api.HealthCheckReply" do
       optional :is_connected_to_server, :bool, 1
       optional :server_time_seconds, :int64, 2
+      optional :server_time_seconds_utc, :int64, 3
     end
   end
 end

@@ -108,6 +108,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     end
     add_message "mt5_term_api.SymbolInfoIntegerData" do
       optional :value, :int64, 1
+      optional :value_utc, :int64, 2
     end
     add_message "mt5_term_api.SymbolInfoStringRequest" do
       optional :symbol, :string, 1
@@ -147,11 +148,13 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     end
     add_message "mt5_term_api.MrpcMqlTick" do
       optional :time, :int64, 1
+      optional :time_utc, :int64, 9
       optional :bid, :double, 2
       optional :ask, :double, 3
       optional :last, :double, 4
       optional :volume, :uint64, 5
       optional :time_msc, :int64, 6
+      optional :time_msc_utc, :int64, 10
       optional :flags, :uint32, 7
       optional :volume_real, :double, 8
     end
@@ -231,7 +234,9 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :symbol, :string, 1
       optional :timeframe, :int32, 2
       optional :from_time, :int64, 3
+      optional :from_time_utc, :int64, 6
       optional :to_time, :int64, 4
+      optional :to_time_utc, :int64, 7
       optional :max_bars, :int32, 5
     end
     add_message "mt5_term_api.PriceHistoryReply" do
@@ -245,6 +250,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     end
     add_message "mt5_term_api.PriceBar" do
       optional :time, :int64, 1
+      optional :time_utc, :int64, 9
       optional :open, :double, 2
       optional :high, :double, 3
       optional :low, :double, 4

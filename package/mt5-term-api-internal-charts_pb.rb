@@ -80,6 +80,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       value :ON_ORDER_PROFIT, 2
       value :ON_OPENED_ORDERS_TICKETS, 3
       value :ON_TRADE_TRANSACTION, 4
+      value :EVENTS, 5
     end
   end
 end

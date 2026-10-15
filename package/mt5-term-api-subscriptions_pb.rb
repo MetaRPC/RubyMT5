@@ -35,6 +35,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :deal_type, :enum, 7, "mt5_term_api.SUB_ENUM_DEAL_TYPE"
       optional :order_time_type, :enum, 8, "mt5_term_api.SUB_ENUM_ORDER_TYPE_TIME"
       optional :order_expiration_time, :message, 9, "google.protobuf.Timestamp"
+      optional :order_expiration_time_utc, :message, 17, "google.protobuf.Timestamp"
       optional :price, :double, 10
       optional :price_trigger_stop_limit, :double, 11
       optional :price_stop_loss, :double, 12
@@ -58,6 +59,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :order_type_filling, :enum, 12, "mt5_term_api.SUB_ENUM_ORDER_TYPE_FILLING"
       optional :type_time, :enum, 13, "mt5_term_api.SUB_ENUM_ORDER_TYPE_TIME"
       optional :order_expiration_time, :message, 14, "google.protobuf.Timestamp"
+      optional :order_expiration_time_utc, :message, 18, "google.protobuf.Timestamp"
       optional :order_comment, :string, 15
       optional :position_ticket, :uint64, 16
       optional :position_by_opposite_position, :uint64, 17
@@ -88,6 +90,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       repeated :position_tickets, :uint64, 1
       repeated :pending_order_tickets, :uint64, 2
       optional :server_time, :message, 3, "google.protobuf.Timestamp"
+      optional :server_time_utc, :message, 5, "google.protobuf.Timestamp"
       optional :terminal_instance_guid_id, :string, 4
     end
     add_message "mt5_term_api.OnPositionProfitReply" do
@@ -143,18 +146,22 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :ticket, :int64, 2
       optional :state, :enum, 3, "mt5_term_api.SUB_ENUM_ORDER_STATE"
       optional :setup_time_msc, :int64, 4
+      optional :setup_time_msc_utc, :int64, 25
       optional :stop_loss, :double, 5
       optional :take_profit, :double, 6
       optional :stop_limit, :double, 7
       optional :price_current, :double, 8
       optional :time_expiration, :message, 9, "google.protobuf.Timestamp"
+      optional :time_expiration_utc, :message, 26, "google.protobuf.Timestamp"
       optional :time_type, :enum, 10, "mt5_term_api.SUB_ENUM_ORDER_TYPE_TIME"
       optional :comment, :string, 11
       optional :symbol, :string, 12
       optional :magic, :int64, 13
       optional :price_open, :double, 14
       optional :setup_time, :message, 15, "google.protobuf.Timestamp"
+      optional :setup_time_utc, :message, 27, "google.protobuf.Timestamp"
       optional :time_expiration_seconds, :int64, 16
+      optional :time_expiration_seconds_utc, :int64, 28
       optional :volume_current, :double, 17
       optional :volume_initial, :double, 18
       optional :account_login, :int64, 19
@@ -169,7 +176,9 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :ticket, :int64, 2
       optional :type, :enum, 3, "mt5_term_api.SUB_ENUM_POSITION_TYPE"
       optional :position_time, :message, 4, "google.protobuf.Timestamp"
+      optional :position_time_utc, :message, 19, "google.protobuf.Timestamp"
       optional :last_update_time, :message, 5, "google.protobuf.Timestamp"
+      optional :last_update_time_utc, :message, 20, "google.protobuf.Timestamp"
       optional :price_open, :double, 6
       optional :profit, :double, 7
       optional :sl, :double, 8
@@ -190,6 +199,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :order_ticket, :int64, 3
       optional :type, :enum, 4, "mt5_term_api.SUB_ENUM_DEAL_TYPE"
       optional :deal_time, :message, 5, "google.protobuf.Timestamp"
+      optional :deal_time_utc, :message, 21, "google.protobuf.Timestamp"
       optional :entry, :enum, 6, "mt5_term_api.SUB_ENUM_DEAL_ENTRY"
       optional :deal_position_id, :int64, 7
       optional :commission, :double, 8
@@ -211,8 +221,11 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :ticket, :int64, 2
       optional :state, :enum, 3, "mt5_term_api.SUB_ENUM_ORDER_STATE"
       optional :setup_time, :message, 4, "google.protobuf.Timestamp"
+      optional :setup_time_utc, :message, 28, "google.protobuf.Timestamp"
       optional :done_time, :message, 5, "google.protobuf.Timestamp"
+      optional :done_time_utc, :message, 29, "google.protobuf.Timestamp"
       optional :time_expiration, :message, 6, "google.protobuf.Timestamp"
+      optional :time_expiration_utc, :message, 30, "google.protobuf.Timestamp"
       optional :position_id, :uint64, 7
       optional :type_time, :enum, 8, "mt5_term_api.SUB_ENUM_ORDER_TYPE_TIME"
       optional :stop_loss, :double, 9
@@ -228,6 +241,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :comment, :string, 22
       optional :symbol, :string, 23
       optional :time_expiration_seconds, :int64, 24
+      optional :time_expiration_seconds_utc, :int64, 31
       optional :account_login, :int64, 25
       optional :order_type, :enum, 26, "mt5_term_api.SUB_ENUM_ORDER_TYPE"
       optional :order_type_filling, :enum, 27, "mt5_term_api.SUB_ENUM_ORDER_TYPE_FILLING"
@@ -277,11 +291,13 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     end
     add_message "mt5_term_api.MrpcSubscriptionMqlTick" do
       optional :time, :message, 1, "google.protobuf.Timestamp"
+      optional :time_utc, :message, 10, "google.protobuf.Timestamp"
       optional :bid, :double, 2
       optional :ask, :double, 3
       optional :last, :double, 4
       optional :volume, :uint64, 5
       optional :time_msc, :int64, 6
+      optional :time_msc_utc, :int64, 11
       optional :flags, :uint32, 7
       optional :volume_real, :double, 8
       optional :symbol, :string, 9

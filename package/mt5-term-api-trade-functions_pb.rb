@@ -68,6 +68,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :type_filling, :enum, 12, "mt5_term_api.MRPC_ENUM_ORDER_TYPE_FILLING"
       optional :type_time, :enum, 13, "mt5_term_api.MRPC_ENUM_ORDER_TYPE_TIME"
       optional :expiration, :message, 14, "google.protobuf.Timestamp"
+      optional :expiration_utc, :message, 18, "google.protobuf.Timestamp"
       optional :comment, :string, 15
       optional :position, :uint64, 16
       optional :position_by, :uint64, 17

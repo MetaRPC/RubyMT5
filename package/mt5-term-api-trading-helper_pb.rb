@@ -33,6 +33,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       proto3_optional :price, :double, 4
       proto3_optional :expiration_time_type, :enum, 5, "mt5_term_api.TMT5_ENUM_ORDER_TYPE_TIME"
       proto3_optional :expiration_time, :message, 6, "google.protobuf.Timestamp"
+      proto3_optional :expiration_time_utc, :message, 9, "google.protobuf.Timestamp"
       proto3_optional :stop_limit, :double, 8
     end
     add_message "mt5_term_api.OrderModifyReply" do
@@ -68,6 +69,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       proto3_optional :stop_limit_price, :double, 10
       proto3_optional :expiration_time_type, :enum, 11, "mt5_term_api.TMT5_ENUM_ORDER_TYPE_TIME"
       proto3_optional :expiration_time, :message, 12, "google.protobuf.Timestamp"
+      proto3_optional :expiration_time_utc, :message, 14, "google.protobuf.Timestamp"
       proto3_optional :quotes_wait_ms, :int32, 13
     end
     add_message "mt5_term_api.OrderSendReply" do

@@ -12,9 +12,13 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     add_message "mt5_term_api.AllHistoryOrdersRequest" do
       optional :inputSortMode, :enum, 1, "mt5_term_api.BMT5_ENUM_ORDER_HISTORY_SORT_TYPE"
       proto3_optional :inputFrom, :message, 2, "google.protobuf.Timestamp"
+      proto3_optional :inputFromUtc, :message, 8, "google.protobuf.Timestamp"
       proto3_optional :inputTo, :message, 3, "google.protobuf.Timestamp"
+      proto3_optional :inputToUtc, :message, 9, "google.protobuf.Timestamp"
       proto3_optional :pageNumber, :int32, 4
       proto3_optional :itemsPerPage, :int32, 5
+      optional :page_token, :string, 6
+      optional :page_size, :int32, 7
     end
     add_message "mt5_term_api.AllHistoryOrdersReply" do
       oneof :response do
@@ -27,16 +31,20 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :pageNumber, :int32, 2
       optional :itemsPerPage, :int32, 3
       repeated :history_orders, :message, 4, "mt5_term_api.HistoryOrderInfo"
+      optional :next_page_token, :string, 5
     end
     add_message "mt5_term_api.HistoryOrderInfo" do
       optional :record_index, :int32, 1
       optional :ticket, :uint64, 2
       optional :time_setup, :message, 3, "google.protobuf.Timestamp"
+      optional :time_setup_utc, :message, 23, "google.protobuf.Timestamp"
       optional :type, :enum, 4, "mt5_term_api.BMT5_ENUM_ORDER_TYPE"
       optional :state, :enum, 5, "mt5_term_api.BMT5_ENUM_ORDER_STATE"
       optional :time_done, :message, 6, "google.protobuf.Timestamp"
+      optional :time_done_utc, :message, 24, "google.protobuf.Timestamp"
       optional :expiration_time_type, :enum, 7, "mt5_term_api.BMT5_ENUM_ORDER_TYPE_TIME"
       optional :expiration_time, :message, 8, "google.protobuf.Timestamp"
+      optional :expiration_time_utc, :message, 25, "google.protobuf.Timestamp"
       optional :filling_type, :enum, 9, "mt5_term_api.BMT5_ENUM_ORDER_TYPE_FILLING"
       optional :magic, :int64, 10
       optional :position_id, :int64, 11
@@ -55,9 +63,13 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     add_message "mt5_term_api.PositionsHistoryRequest" do
       optional :sort_type, :enum, 1, "mt5_term_api.AH_ENUM_POSITIONS_HISTORY_SORT_TYPE"
       proto3_optional :position_open_time_from, :message, 2, "google.protobuf.Timestamp"
+      proto3_optional :position_open_time_from_utc, :message, 8, "google.protobuf.Timestamp"
       proto3_optional :position_open_time_to, :message, 3, "google.protobuf.Timestamp"
+      proto3_optional :position_open_time_to_utc, :message, 9, "google.protobuf.Timestamp"
       proto3_optional :page_number, :int32, 4
       proto3_optional :items_per_page, :int32, 5
+      optional :page_token, :string, 6
+      optional :page_size, :int32, 7
     end
     add_message "mt5_term_api.PositionsHistoryReply" do
       oneof :response do
@@ -67,13 +79,17 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     end
     add_message "mt5_term_api.PositionsHistoryData" do
       repeated :history_positions, :message, 1, "mt5_term_api.PositionHistoryInfo"
+      optional :total_count, :int32, 2
+      optional :next_page_token, :string, 3
     end
     add_message "mt5_term_api.PositionHistoryInfo" do
       optional :index, :int32, 1
       optional :position_ticket, :uint64, 2
       optional :order_type, :enum, 3, "mt5_term_api.AH_ENUM_POSITIONS_HISTORY_ORDER_TYPE"
       optional :open_time, :message, 4, "google.protobuf.Timestamp"
+      optional :open_time_utc, :message, 19, "google.protobuf.Timestamp"
       optional :close_time, :message, 5, "google.protobuf.Timestamp"
+      optional :close_time_utc, :message, 20, "google.protobuf.Timestamp"
       optional :volume, :double, 6
       optional :open_price, :double, 7
       optional :close_price, :double, 8
@@ -136,6 +152,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :index, :uint32, 1
       optional :ticket, :uint64, 2
       optional :open_time, :message, 3, "google.protobuf.Timestamp"
+      optional :open_time_utc, :message, 21, "google.protobuf.Timestamp"
       optional :volume, :double, 4
       optional :price_open, :double, 5
       optional :stop_loss, :double, 6
@@ -144,6 +161,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :swap, :double, 9
       optional :profit, :double, 10
       optional :last_update_time, :message, 11, "google.protobuf.Timestamp"
+      optional :last_update_time_utc, :message, 22, "google.protobuf.Timestamp"
       optional :type, :enum, 12, "mt5_term_api.BMT5_ENUM_POSITION_TYPE"
       optional :magic_number, :int64, 13
       optional :identifier, :int64, 14
@@ -169,8 +187,11 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :type, :enum, 12, "mt5_term_api.BMT5_ENUM_ORDER_TYPE"
       optional :state, :enum, 13, "mt5_term_api.BMT5_ENUM_ORDER_STATE"
       optional :time_expiration, :message, 14, "google.protobuf.Timestamp"
+      optional :time_expiration_utc, :message, 25, "google.protobuf.Timestamp"
       optional :time_setup, :message, 15, "google.protobuf.Timestamp"
+      optional :time_setup_utc, :message, 26, "google.protobuf.Timestamp"
       optional :time_done, :message, 16, "google.protobuf.Timestamp"
+      optional :time_done_utc, :message, 27, "google.protobuf.Timestamp"
       optional :type_filling, :enum, 17, "mt5_term_api.BMT5_ENUM_ORDER_TYPE_FILLING"
       optional :type_time, :enum, 18, "mt5_term_api.BMT5_ENUM_ORDER_TYPE_TIME"
       optional :position_id, :int64, 19
@@ -182,10 +203,14 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     end
     add_message "mt5_term_api.OrderHistoryRequest" do
       optional :inputFrom, :message, 1, "google.protobuf.Timestamp"
+      optional :inputFromUtc, :message, 8, "google.protobuf.Timestamp"
       optional :inputTo, :message, 2, "google.protobuf.Timestamp"
+      optional :inputToUtc, :message, 9, "google.protobuf.Timestamp"
       optional :inputSortMode, :enum, 3, "mt5_term_api.BMT5_ENUM_ORDER_HISTORY_SORT_TYPE"
       optional :pageNumber, :int32, 4
       optional :itemsPerPage, :int32, 5
+      optional :page_token, :string, 6
+      optional :page_size, :int32, 7
     end
     add_message "mt5_term_api.OrderHistoryReply" do
       oneof :response do
@@ -198,6 +223,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :pageNumber, :int32, 2
       optional :itemsPerPage, :int32, 3
       repeated :history_data, :message, 4, "mt5_term_api.HistoryData"
+      optional :next_page_token, :string, 5
     end
     add_message "mt5_term_api.HistoryData" do
       optional :index, :uint32, 1
@@ -216,6 +242,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :volume, :double, 9
       optional :entry_type, :enum, 10, "mt5_term_api.BMT5_ENUM_DEAL_ENTRY_TYPE"
       optional :time, :message, 11, "google.protobuf.Timestamp"
+      optional :time_utc, :message, 19, "google.protobuf.Timestamp"
       optional :type, :enum, 12, "mt5_term_api.BMT5_ENUM_DEAL_TYPE"
       optional :reason, :enum, 13, "mt5_term_api.BMT5_ENUM_DEAL_REASON"
       optional :position_id, :uint64, 14
@@ -227,7 +254,9 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
     add_message "mt5_term_api.OrderHistoryData" do
       optional :ticket, :uint64, 1
       optional :setup_time, :message, 2, "google.protobuf.Timestamp"
+      optional :setup_time_utc, :message, 22, "google.protobuf.Timestamp"
       optional :done_time, :message, 3, "google.protobuf.Timestamp"
+      optional :done_time_utc, :message, 23, "google.protobuf.Timestamp"
       optional :state, :enum, 4, "mt5_term_api.BMT5_ENUM_ORDER_STATE"
       optional :price_current, :double, 5
       optional :price_open, :double, 6
@@ -239,6 +268,7 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :magic_number, :int64, 12
       optional :type, :enum, 13, "mt5_term_api.BMT5_ENUM_ORDER_TYPE"
       optional :time_expiration, :message, 14, "google.protobuf.Timestamp"
+      optional :time_expiration_utc, :message, 24, "google.protobuf.Timestamp"
       optional :type_filling, :enum, 15, "mt5_term_api.BMT5_ENUM_ORDER_TYPE_FILLING"
       optional :type_time, :enum, 16, "mt5_term_api.BMT5_ENUM_ORDER_TYPE_TIME"
       optional :position_id, :uint64, 17
@@ -265,8 +295,10 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :account_company_name, :string, 7
       optional :account_currency, :string, 8
       optional :server_time, :message, 9, "google.protobuf.Timestamp"
+      optional :server_time_utc, :message, 14, "google.protobuf.Timestamp"
       optional :utc_timezone_server_time_shift_minutes, :int64, 10
       optional :account_credit, :double, 11
+      optional :server_utc_offset_seconds, :int32, 13
     end
     add_message "mt5_term_api.SymbolParamsManyRequest" do
       proto3_optional :symbol_name, :string, 1
@@ -363,7 +395,9 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :volume_high, :int64, 74
       optional :volume_low, :int64, 75
       optional :time, :message, 76, "google.protobuf.Timestamp"
+      optional :time_utc, :message, 113, "google.protobuf.Timestamp"
       optional :time_msc, :int64, 77
+      optional :time_msc_utc, :int64, 114
       optional :digits, :int32, 78
       optional :spread_float, :bool, 79
       optional :spread, :int32, 80
@@ -371,7 +405,9 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :trade_calc_mode, :enum, 82, "mt5_term_api.BMT5_ENUM_SYMBOL_CALC_MODE"
       optional :trade_mode, :enum, 83, "mt5_term_api.BMT5_ENUM_SYMBOL_TRADE_MODE"
       optional :start_time, :message, 84, "google.protobuf.Timestamp"
+      optional :start_time_utc, :message, 115, "google.protobuf.Timestamp"
       optional :expiration_time, :message, 85, "google.protobuf.Timestamp"
+      optional :expiration_time_utc, :message, 116, "google.protobuf.Timestamp"
       optional :trade_stops_level, :int32, 86
       optional :trade_freeze_level, :int32, 87
       optional :trade_exe_mode, :enum, 88, "mt5_term_api.BMT5_ENUM_SYMBOL_TRADE_EXECUTION"
