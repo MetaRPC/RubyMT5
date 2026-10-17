@@ -18,10 +18,10 @@
 
 ## 📦 Installation
 
-Install RubyMT5 via your standard Ruby package manager:
+RubyMT5 is not published on a package registry; get it from the repository:
 
 ```bash
-gem install metarpc-mt5
+git clone https://github.com/MetaRPC/RubyMT5.git
 ```
 
 ---

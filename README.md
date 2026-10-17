@@ -12,7 +12,7 @@
 ## 📦 Installation
 
 ```bash
-gem install rubymt5
+git clone https://github.com/MetaRPC/RubyMT5.git
 ```
 
 ---

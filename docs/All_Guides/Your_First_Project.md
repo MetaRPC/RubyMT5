@@ -22,10 +22,10 @@ mkdir my_rubymt5_bot
 cd my_rubymt5_bot
 ```
 
-Install the package:
+Get the SDK (it is not on a package registry):
 
 ```bash
-gem install metarpc-mt5
+git clone https://github.com/MetaRPC/RubyMT5.git
 ```
 
 ---
