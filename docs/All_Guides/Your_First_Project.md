@@ -34,14 +34,27 @@ git clone https://github.com/MetaRPC/RubyMT5.git
 
 Create your main application file and paste the following snippet:
 
-```
+```ruby
 require 'metarpc_mt5'
 
-# Session ID generation on Connect and authentication are handled automatically
-account = MetaRPC::MT5Account.new(user: user, password: password, host: grpc_server, api_key: api_key)
-account.connect_by_server_name(server_name, 'EURUSD', 30)
-summary = account.account_summary
-puts "Balance: #{summary.account_balance}, Equity: #{summary.account_equity}" 
+client = MetaRPC::MT5::Client.new('mt5.mrpc.pro', 443)
+
+puts 'Connecting...'
+client.connect(2005432, 'my_pass')
+puts 'Connected!'
+
+acc = client.account_info
+puts "Account Balance: #{acc[:balance]} #{acc[:currency]}"
+
+# Open 0.01 Buy
+order = client.order_send(
+  symbol: 'EURUSD',
+  action: :buy,
+  volume: 0.01,
+  comment: 'Ruby MT5 Quickstart'
+)
+
+puts "Order executed! Deal ##{order[:deal]} Ticket ##{order[:ticket]}"
 ```
 
 ---
@@ -51,9 +64,11 @@ puts "Balance: #{summary.account_balance}, Equity: #{summary.account_equity}"
 Run your application:
 
 ```bash
-# Verify connection output
-# Balance: 10000.00, Equity: 10000.00
+bundle install
+bundle exec ruby examples/quickstart.rb
 ```
+
+Run it from the cloned repository: its `examples/quickstart` does the same thing.
 
 ---
 
