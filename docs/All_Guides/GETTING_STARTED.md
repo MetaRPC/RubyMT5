@@ -1,5 +1,7 @@
 # Getting Started with RubyMT5
 
+> **Note:** releases before October 2026 were a preview whose `Client` returned simulated values (a fixed balance, made-up order tickets). `MetaRPC::MT5::Client` is now a real TLS gRPC client against `mt5.mrpc.pro:443` (connect, account summary, quotes, bars, tick streams, orders, history), verified live on a demo account; see `FLEET_AUDIT.md` for every call signature. The [REST API](https://mrpc.pro/docs-legacy/mt5-client-api) remains available as well.
+
 > **Quick Setup & Overview** - Start automating your trading with RubyMT5 (Ruby for MetaTrader 5) in minutes.
 
 ---
@@ -18,10 +20,10 @@
 
 ## 📦 Installation
 
-Install RubyMT5 via your standard Ruby package manager:
+RubyMT5 is not published on a package registry; get it from the repository:
 
 ```bash
-gem install metarpc-mt5
+git clone https://github.com/MetaRPC/RubyMT5.git
 ```
 
 ---

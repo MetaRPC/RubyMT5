@@ -22,10 +22,10 @@ mkdir my_rubymt5_bot
 cd my_rubymt5_bot
 ```
 
-Install the package:
+Get the SDK (it is not on a package registry):
 
 ```bash
-gem install metarpc-mt5
+git clone https://github.com/MetaRPC/RubyMT5.git
 ```
 
 ---
@@ -34,14 +34,29 @@ gem install metarpc-mt5
 
 Create your main application file and paste the following snippet:
 
-```
+```ruby
 require 'metarpc_mt5'
 
-# Session ID generation on Connect and authentication are handled automatically
-account = MetaRPC::MT5Account.new(user: user, password: password, host: grpc_server, api_key: api_key)
-account.connect_by_server_name(server_name, 'EURUSD', 30)
-summary = account.account_summary
-puts "Balance: #{summary.account_balance}, Equity: #{summary.account_equity}" 
+# One stable terminal id per account/strategy: the gateway keeps one terminal per id.
+terminal_id = MetaRPC::MT5::Client.uuid5(MetaRPC::MT5::Client::NAMESPACE_DNS, 'my-first-bot')
+client = MetaRPC::MT5::Client.new('mt5.mrpc.pro', 443, api_key: ENV['MRPC_API_KEY'], id: terminal_id)
+
+puts 'Connecting...'
+client.connect(2005432, 'my_pass', server: 'MetaQuotes-Demo')
+puts 'Connected!'
+
+acc = client.account_summary
+puts "Account Balance: #{acc.account_balance} #{acc.account_currency}"
+
+# Open 0.01 Buy (only on a demo account)
+if acc.account_trade_mode == :MRPC_ACCOUNT_TRADE_MODE_DEMO
+  order = client.order_send(symbol: 'EURUSD', type: :buy, volume: 0.01, comment: 'Ruby MT5 Quickstart')
+  if order.returned_code == 10_009
+    puts "Order executed! Deal ##{order.deal} Ticket ##{order.order}"
+  else
+    puts "Rejected: #{order.returned_code} #{order.returned_string_code}"
+  end
+end
 ```
 
 ---
@@ -51,9 +66,11 @@ puts "Balance: #{summary.account_balance}, Equity: #{summary.account_equity}"
 Run your application:
 
 ```bash
-# Verify connection output
-# Balance: 10000.00, Equity: 10000.00
+bundle install
+MRPC_API_KEY=... MT5_LOGIN=... MT5_PASSWORD=... MT5_SERVER=MetaQuotes-Demo bundle exec ruby examples/quickstart.rb
 ```
+
+Run it from the cloned repository: its `examples/quickstart` does the same thing.
 
 ---
 

@@ -2,6 +2,8 @@
 
 > Idiomatic Ruby gem SDK for MetaTrader 5 algorithmic trading automation.
 
+> **Note:** releases before October 2026 were a preview whose `Client` returned simulated values (a fixed balance, made-up order tickets). `MetaRPC::MT5::Client` is now a real TLS gRPC client against `mt5.mrpc.pro:443` (connect, account summary, quotes, bars, tick streams, orders, history), verified live on a demo account; see `FLEET_AUDIT.md` for every call signature. The [REST API](https://mrpc.pro/docs-legacy/mt5-client-api) remains available as well.
+
 [![Docs](https://img.shields.io/badge/docs-RubyMT5-blue.svg)](https://metarpc.github.io/RubyMT5/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -11,7 +13,11 @@
 
 ## 📦 Installation
 
-The gem is not published on rubygems. Reference it by path from your `Gemfile`:
+The gem is not published on rubygems. Get it from the repository and reference it by path from your `Gemfile`:
+
+```bash
+git clone https://github.com/MetaRPC/RubyMT5.git
+```
 
 ```ruby
 source "https://rubygems.org"
