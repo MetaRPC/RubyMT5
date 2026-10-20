@@ -11,9 +11,17 @@
 
 ## 📦 Installation
 
-```bash
-gem install rubymt5
+The gem is not published on rubygems. Reference it by path from your `Gemfile`:
+
+```ruby
+source "https://rubygems.org"
+gem "metarpc_mt5", path: "/path/to/RubyMT5"
 ```
+
+Runtime dependencies: `grpc`, `google-protobuf` (>= 4.26), `googleapis-common-protos-types` (prebuilt
+binaries exist for Windows x64 and x86_64-linux; Ruby >= 3.1). `require "metarpc_mt5"` loads
+`MetaRPC::MT5::Client` and the generated `Mt5TermApi::*` gRPC messages. See `FLEET_AUDIT.md` for every
+verified call signature.
 
 ---
 
