@@ -17,7 +17,28 @@ module Mt5TermApi
       self.unmarshal_class_method = :decode
       self.service_name = 'mt5_term_api.DemoAccount'
 
-      # Open a demo account. Full wizard flow: search → select → fill form → register.
+      # Search for broker companies by name.
+      # Returns a list of matching companies from the wizard's ListView.
+      # [DefaultValues]
+      # {
+      #   "searchText": "MetaQuotes"
+      # }
+      rpc :FindCompanies, ::Mt5TermApi::GuiDemoFindCompaniesRequest, ::Mt5TermApi::GuiDemoFindCompaniesReply
+      # Get available servers and account types for a company.
+      # Navigates: company selection → demo account → reads dropdown options.
+      # [DefaultValues]
+      # {
+      #   "companyName": "MetaQuotes Ltd."
+      # }
+      rpc :ServersAndAccountTypes, ::Mt5TermApi::GuiDemoServersAndTypesRequest, ::Mt5TermApi::GuiDemoServersAndTypesReply
+      # Debug: enumerate the controls of the wizard dialog currently open in the terminal.
+      # controlCount is -1 and the dump empty when no wizard dialog is open.
+      rpc :EnumControls, ::Mt5TermApi::GuiDemoEnumControlsRequest, ::Mt5TermApi::GuiDemoEnumControlsReply
+      # Open a demo account. The wire protocol is tried first (a direct request to the trade
+      # server, about a second); when the trade server does not accept it (TeleTrade answers
+      # 1001 INVALID_ACCOUNT, for example) the terminal's "Open an Account" wizard is driven
+      # instead, bounded by timeoutSeconds (default 90). debugLog says which path produced the
+      # account ("Wire protocol" or "Wire protocol failed: ...; GUI wizard used").
       # Returns login, password, and investor password for the new demo account.
       # [DefaultValues]
       # {

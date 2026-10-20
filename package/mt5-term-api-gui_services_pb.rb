@@ -18,7 +18,12 @@ module Mt5TermApi
       rpc :BrokerSearch, ::Mt5TermApi::GuiBrokerSearchRequest, ::Mt5TermApi::GuiBrokerSearchReply
       rpc :LoginEx, ::Mt5TermApi::GuiLoginExRequest, ::Mt5TermApi::GuiLoginExReply
       rpc :CloseDialogs, ::Mt5TermApi::GuiCloseDialogsRequest, ::Mt5TermApi::GuiCloseDialogsReply
+      # Demo-account wizard automation (mt5-term-gui.dll inside the terminal). The manager's
+      # DemoAccount service proxies to these; the terminal side implements all of them.
+      rpc :DemoFindCompanies, ::Mt5TermApi::GuiDemoFindCompaniesRequest, ::Mt5TermApi::GuiDemoFindCompaniesReply
+      rpc :DemoServersAndTypes, ::Mt5TermApi::GuiDemoServersAndTypesRequest, ::Mt5TermApi::GuiDemoServersAndTypesReply
       rpc :DemoOpenAccount, ::Mt5TermApi::GuiDemoOpenAccountRequest, ::Mt5TermApi::GuiDemoOpenAccountReply
+      rpc :DemoEnumControls, ::Mt5TermApi::GuiDemoEnumControlsRequest, ::Mt5TermApi::GuiDemoEnumControlsReply
       rpc :DemoOpenAccountInteractive, stream(::Mt5TermApi::GuiDemoInteractiveClientMessage), stream(::Mt5TermApi::GuiDemoInteractiveServerMessage)
     end
 

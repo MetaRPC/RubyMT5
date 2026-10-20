@@ -34,6 +34,16 @@ module Mt5TermApi
       # History positions
       rpc :PositionsHistory, ::Mt5TermApi::PositionsHistoryRequest, ::Mt5TermApi::PositionsHistoryReply
       rpc :AllHistoryOrders, ::Mt5TermApi::AllHistoryOrdersRequest, ::Mt5TermApi::AllHistoryOrdersReply
+      # Every deal of the account in a time range: trades and also the deals without an order - deposits, withdrawals, credit,
+      # charges, corrections, bonuses, commissions, interest, dividends, taxes - which OrderHistory and PositionsHistory leave out.
+      # A balance operation has type BMT5_DEAL_TYPE_BALANCE (CREDIT, BONUS...), order 0 and position_id 0; profit is its amount.
+      # [DefaultValues]
+      # {
+      #   "inputFromUtc": "2026-10-01T00:00:00Z",
+      #   "inputToUtc": "2026-10-31T00:00:00Z",
+      #   "pageSize": 1000
+      # }
+      rpc :DealsHistory, ::Mt5TermApi::DealsHistoryRequest, ::Mt5TermApi::DealsHistoryReply
     end
 
     Stub = Service.rpc_stub_class
