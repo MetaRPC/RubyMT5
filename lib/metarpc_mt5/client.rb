@@ -229,7 +229,7 @@ module MetaRPC
       # nil when the symbol does not exist.
       def symbol_params(symbol)
         data = call(:account_helper, :symbol_params_many, Mt5TermApi::SymbolParamsManyRequest.new(symbol_name: symbol))
-        data.symbol_infos.find { |s| s.name == symbol } || data.symbol_infos.first
+        data.symbol_infos.find { |s| s.name == symbol }
       end
 
       # All symbols' specs in ONE call (do not page: page_number does not advance).
