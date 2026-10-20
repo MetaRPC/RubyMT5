@@ -975,7 +975,7 @@
 
 <h1 id="getting-started-with-rubymt5">Getting Started with RubyMT5<a class="headerlink" href="#getting-started-with-rubymt5" title="Permanent link">¶</a></h1>
 <blockquote>
-<p><strong>Preview: this SDK does not talk to the server yet.</strong> <code>connect</code>, the account and order calls return simulated values (a fixed balance, made-up order tickets) and nothing is traded. For real MT5 accounts use the Python, Node.js, C#, Go or Java SDK, or the <a href="https://mrpc.pro/docs-legacy/mt5-client-api">REST API</a>.</p>
+<p><strong>Note:</strong> releases before October 2026 were a preview whose <code>Client</code> returned simulated values (a fixed balance, made-up order tickets). <code>MetaRPC::MT5::Client</code> is now a real TLS gRPC client against <code>mt5.mrpc.pro:443</code> (connect, account summary, quotes, bars, tick streams, orders, history), verified live on a demo account; see <code>FLEET_AUDIT.md</code> for every call signature. The <a href="https://mrpc.pro/docs-legacy/mt5-client-api">REST API</a> remains available as well.</p>
 </blockquote>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
 <ul>
