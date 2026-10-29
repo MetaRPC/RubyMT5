@@ -17,6 +17,16 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :is_connected_to_server, :bool, 1
       optional :server_time_seconds, :int64, 2
       optional :server_time_seconds_utc, :int64, 3
+      repeated :workers, :message, 4, "mt5_term_api.MqlWorkerState"
+    end
+    add_message "mt5_term_api.MqlWorkerState" do
+      optional :worker, :int32, 1
+      optional :can_trade, :bool, 2
+      optional :waiting, :bool, 3
+      optional :ms_since_last_poll, :int64, 4
+      optional :running_command, :string, 5
+      optional :running_command_id, :int64, 6
+      optional :running_ms, :int64, 7
     end
   end
 end
@@ -26,4 +36,5 @@ module Mt5TermApi
   StopListeningReply = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.StopListeningReply").msgclass
   HealthCheckRequest = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.HealthCheckRequest").msgclass
   HealthCheckReply = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.HealthCheckReply").msgclass
+  MqlWorkerState = ::Google::Protobuf::DescriptorPool.generated_pool.lookup("mt5_term_api.MqlWorkerState").msgclass
 end

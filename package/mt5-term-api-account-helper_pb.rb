@@ -328,6 +328,8 @@ Google::Protobuf::DescriptorPool.generated_pool.build do
       optional :account_margin_mode, :enum, 17, "mt5_term_api.MrpcEnumAccountMarginMode"
       optional :account_trade_allowed, :bool, 18
       optional :account_trade_expert, :bool, 19
+      proto3_optional :terminal_connected, :bool, 20
+      proto3_optional :terminal_trade_allowed, :bool, 21
     end
     add_message "mt5_term_api.SymbolParamsManyRequest" do
       proto3_optional :symbol_name, :string, 1
