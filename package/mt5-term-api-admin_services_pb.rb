@@ -89,6 +89,13 @@ module MrpcAdmin
       # records any stop intent). cause is a StopCause name; only customer/API/admin/delete/test stops and
       # InternalReap are accepted. Callers must check reply.error.
       rpc :StopTerminalLocal, ::MrpcAdmin::StopTerminalLocalRequest, ::MrpcAdmin::StopTerminalLocalReply
+      # Grants or revokes the dedicated-IP add-on entitlement for ONE terminal (UserTerminals.DedicatedIpEntitled).
+      # The trusted write path for the add-on: the dedicated-IP connect header assigns an IP and bills the 6 USD per 720 h only
+      # when the terminal is entitled (default deny), so this gate must be set first. Called with the ADMIN_KEY (the
+      # mrpc-rest gateway maps its X-Admin-Key header onto admin_key), or by mrpc-back after a confirmed purchase.
+      # Persisted in Mongo; any pod honours it. Set entitled=false to revoke (a running terminal keeps its current IP
+      # until it is stopped/released).
+      rpc :SetDedicatedIpEntitlement, ::MrpcAdmin::SetDedicatedIpEntitlementRequest, ::MrpcAdmin::SetDedicatedIpEntitlementReply
     end
 
     Stub = Service.rpc_stub_class
