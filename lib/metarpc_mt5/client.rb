@@ -25,10 +25,15 @@ module MetaRPC
     # Raised when the gateway answers with the `error` branch of a reply oneof
     # (MQL error, validation error, terminal timeout, ...).
     class ApiError < StandardError
-      attr_reader :error
+      # Trade RPCs: an in-band timeout of one of these leaves the trade's outcome unknown.
+      TRADE_RPCS = %i[order_send order_send_without_checks order_modify order_close].freeze
+      IN_BAND_TIMEOUT_CODES = %w[MRPC_TIMEOUT TERMINAL_API_TIMEOUT COMMAND_TIMEOUT_EXCEEDED TERMINAL_API_CALL_TIMEOUT].freeze
+
+      attr_reader :error, :rpc_name
 
       def initialize(error, rpc_name = nil)
         @error = error
+        @rpc_name = rpc_name
         super("#{rpc_name}: #{error.error_code} #{error.error_message} " \
               "(type=#{error.type} mql=#{error.mql_error_code}/#{error.mql_error_int_code} " \
               "#{error.mql_error_description} trade=#{error.mql_error_trade_code}/#{error.mql_error_trade_int_code} " \
@@ -36,10 +41,61 @@ module MetaRPC
       end
 
       def code = error.error_code
+
+      # The API key was refused (API_KEY_INVALID / API_KEY_REQUIRED): retrying or reconnecting does not help.
+      def api_key_error? = "#{code} #{error.error_message}".match?(/API_KEY_(INVALID|REQUIRED)/i)
+
+      # The outcome of a trade call is unknown: it timed out on the gateway or in the terminal (MRPC_TIMEOUT,
+      # TERMINAL_API_TIMEOUT, ...) or the trade server answered 10012 TIMEOUT / 10028 LOCKED / 10031 CONNECTION.
+      # The trade may or may not have been executed: check positions / orders before sending it again.
+      def trade_outcome_unknown?
+        return true if code == TradeOutcomeUnknown::CODE
+        return false unless TRADE_RPCS.include?(rpc_name&.to_sym)
+        IN_BAND_TIMEOUT_CODES.include?(code) || %i[MRPC_TIMEOUT TERMINAL_API_TIMEOUT].include?(error.type) ||
+          [10_012, 10_028, 10_031].include?(error.mql_error_trade_int_code)
+      end
     end
 
     # Raised by connect when the broker rejects the login. Never retry this.
     class InvalidLoginError < ApiError; end
+
+    # A trade call (order_send, order_modify, order_close) failed at the transport level - gRPC UNAVAILABLE,
+    # DEADLINE_EXCEEDED, UNKNOWN or INTERNAL - after the request may already have reached the terminal: the trade
+    # may or may not have been executed. The SDK never re-sends a trade: check the open positions / orders (and the
+    # history) before sending it again.
+    # It is mixed into the GRPC::BadStatus the call raised, so the error keeps its class (GRPC::Unavailable, ...),
+    # its gRPC code, details and metadata: existing `rescue GRPC::BadStatus` / `rescue GRPC::Unavailable` handlers
+    # still catch it, and `rescue MetaRPC::MT5::TradeOutcomeUnknown` catches exactly this condition.
+    module TradeOutcomeUnknown
+      CODE = "TRADE_OUTCOME_UNKNOWN".freeze
+      GRPC_CODES = [GRPC::Core::StatusCodes::UNAVAILABLE, GRPC::Core::StatusCodes::DEADLINE_EXCEEDED,
+                    GRPC::Core::StatusCodes::UNKNOWN, GRPC::Core::StatusCodes::INTERNAL].freeze
+
+      # The trade call (e.g. "OrderSend") and the transport error's own message.
+      attr_reader :operation, :transport_message
+
+      def error_code = CODE
+      def trade_outcome_unknown? = true
+
+      def to_s
+        name = GRPC::Core::StatusCodes.constants.find { |c| GRPC::Core::StatusCodes.const_get(c) == code } || code
+        "#{CODE}: #{operation} failed with gRPC #{name} after the request may have reached the terminal; "           "the trade may or may not have been executed. It was NOT re-sent automatically: check open positions/orders "           "before retrying. (#{transport_message})"
+      end
+
+      # Marks a trade call's transport failure; returns it (the same object).
+      def self.mark(err, operation)
+        message = err.to_s
+        err.extend(self)
+        err.instance_variable_set(:@operation, operation)
+        err.instance_variable_set(:@transport_message, message)
+        err
+      end
+
+      # True for a transport failure after which a trade's outcome is unknown (not a refused API key).
+      def self.applies?(err)
+        GRPC_CODES.include?(err.code) && !err.details.to_s.match?(/API_KEY_(INVALID|REQUIRED)/i)
+      end
+    end
 
     # Thin, honest wrapper over the MetaRPC MT5 gRPC gateway.
     #
@@ -325,7 +381,8 @@ module MetaRPC
         req.expiration_time_type = expiration_type if expiration_type
         req.expiration_time_utc = ts(expiration_utc) if expiration_utc
         req.quotes_wait_ms = quotes_wait_ms if quotes_wait_ms
-        call(:trading_helper, without_checks ? :order_send_without_checks : :order_send, req, timeout: 120)
+        trade_call(without_checks ? "OrderSendWithoutChecks" : "OrderSend",
+                   without_checks ? :order_send_without_checks : :order_send, req, timeout: 120)
       end
 
       def buy(symbol, volume, **kw) = order_send(symbol: symbol, type: :buy, volume: volume, **kw)
@@ -341,14 +398,14 @@ module MetaRPC
         req.stop_limit = stop_limit if stop_limit
         req.expiration_time_type = expiration_type if expiration_type
         req.expiration_time_utc = ts(expiration_utc) if expiration_utc
-        call(:trading_helper, :order_modify, req, timeout: 120)
+        trade_call("OrderModify", :order_modify, req, timeout: 120)
       end
 
       # Close a position (volume 0/nil = full close) or delete a pending order.
       # Returns Mt5TermApi::OrderCloseData (returned_code 10009, close_mode).
       def order_close(ticket:, volume: nil, slippage: 10)
         req = Mt5TermApi::OrderCloseRequest.new(ticket: ticket, volume: volume.to_f, slippage: slippage)
-        call(:trading_helper, :order_close, req, timeout: 120)
+        trade_call("OrderClose", :order_close, req, timeout: 120)
       end
 
       def order_check(request) = call(:trade_functions, :order_check, Mt5TermApi::OrderCheckRequest.new(mql_trade_request: request))
@@ -419,6 +476,15 @@ module MetaRPC
       def call(service, rpc, request, timeout: @timeout)
         reply = stub(service).public_send(rpc, request, metadata: metadata, deadline: Time.now + timeout)
         unwrap(reply, rpc)
+      end
+
+      # A trade call: sent exactly once, never re-sent. A transport failure after which the trade may have been
+      # executed is raised as the same GRPC::BadStatus, marked TradeOutcomeUnknown.
+      def trade_call(operation, rpc, request, timeout:)
+        call(:trading_helper, rpc, request, timeout: timeout)
+      rescue GRPC::BadStatus => e
+        TradeOutcomeUnknown.mark(e, operation) if TradeOutcomeUnknown.applies?(e)
+        raise
       end
 
       def unwrap(reply, rpc)
