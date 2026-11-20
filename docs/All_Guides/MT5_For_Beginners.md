@@ -1,400 +1,148 @@
-# MT5 for Beginners: Your First Steps in Trading
+# MT5 for Beginners
 
-Welcome! This guide is designed for complete beginners who have never worked with MetaTrader 5 or trading. We'll walk you through everything you need to know to get started.
-
----
-
-## What is MetaTrader 5 (MT5)?
-
-**MetaTrader 5** is a powerful trading platform used by millions of traders worldwide. It allows you to:
-
-- Trade forex, stocks, commodities, and cryptocurrencies
-- Analyze markets with charts and indicators
-- Execute automated trading strategies
-- Monitor your positions in real-time
-
-Think of MT5 as your "cockpit" for accessing financial markets. PyMT5 allows you to programmatically control this cockpit using Python.
+> New to MetaTrader 5? This is the 5-minute mental model you need before the code makes sense.
 
 ---
 
-## Demo vs Live Account: Start Safely
+## What MT5 is
 
-### Why start with a demo account?
+**MetaTrader 5 (MT5)** is a trading platform. Your **account** lives on a broker's **server** (e.g. `MetaQuotes-Demo`). Through it you trade **symbols** (instruments like `EURUSD` or `XAUUSD`).
 
-A **demo account** is a risk-free practice account with virtual money. We **strongly recommend** starting with demo for several reasons:
+This SDK talks to your MT5 terminal over the network (gRPC to `mt5.mrpc.pro:443`) so you can automate everything from Ruby.
 
-- ✅ **Zero risk** - practice with virtual funds (typically $10,000 - $100,000)
-- ✅ **Real market conditions** - live prices and market behavior
-- ✅ **Learn the platform** - understand how MT5 works before risking real money
-- ✅ **Test your code** - perfect for developing and testing your PyMT5 applications
-
-### Live Account
-
-A **live account** uses your real money. Only move to live trading when you:
-
-- Understand how MT5 works
-- Have thoroughly tested your strategies on demo
-- Are aware of the risks involved
+> Always learn on a **demo** account. It trades with fake money on real prices — no risk.
 
 ---
 
-## Quick Start: Creating a Demo Account
+## Getting a demo account & API key
 
-The fastest way to get started is to create a demo account directly through the MT5 terminal application.
+**Registration and your API key are free.** Sign up at [mrpc.pro/signup](https://mrpc.pro/signup) and your key is provisioned automatically — nothing to generate; in the web Explorer it's even attached to every call for you. What costs money is **paid usage of the service** (for example the instant $1 demo below).
 
-### Step 1️⃣: Download and Install MT5 Terminal
+To run the SDK you also need an **MT5 demo account** (login / password / server). You can get one two ways:
 
-1. Visit the official MetaTrader website: [https://www.metatrader5.com/en/download](https://www.metatrader5.com/en/download)
+### ⚡ Fastest — one click on mrpc.pro ($1)
 
-2. Download the version for your operating system (Windows/Mac/Linux)
+Our **[MT5 Client API Explorer](https://mrpc.pro/explorer/mt5-client)** (a live API playground) spins up a demo account instantly — no terminal install:
 
-3. Install the application
+1. Open the **[MT5 Client API Explorer](https://mrpc.pro/explorer/mt5-client)** (sign in first). Your **API key** is already shown at the top (*Active* · **Copy key**).
+2. The demo **server is fixed to `MetaQuotes-Demo`**. Click **Open demo account ($1)**. The **$1 is charged to your MetaRPC balance** (the account that holds your API key) — *not* to a broker.
+3. The demo is created **instantly** with a ready **login / password / server** — you can even run real API calls right on that page (the key is attached automatically).
 
----
+![MT5 Client API Explorer — one-click demo account](../Guide_Images/mrpc-explorer-mt5.png)
 
-### Step 2️⃣: Launch MT5 and Locate the Navigator Panel
+Copy the demo **login / password / server**, then jump to [Getting Started](./GETTING_STARTED.md) to connect from Ruby.
 
-When you open the MetaTrader 5 application, you'll typically see a popup window offering to:
+### 🖥️ Free — create a demo in the MetaTrader 5 terminal
 
-- Register for the MQL community
+The no-cost route: create a MetaQuotes demo account directly in the MT5 terminal (free), and connect with your free API key — or with the literal value `"TRIAL"` for a quick first look.
 
-- Open a new account or log into an existing one
+**1 · Download & install MT5.** Get the terminal from **[metatrader5.com/download](https://www.metatrader5.com/en/download)** and install it.
 
-If this popup doesn't appear automatically, you need to find the **Navigator** panel.
+**2 · Find the Navigator panel.** It's on the left, below *Market Watch*. Its **Accounts** section is where you add accounts.
 
-![Navigator Panel Location](../Guide_Images/1.%20NAV.png)
+![Navigator panel](../Guide_Images/1.%20NAV.png)
 
+**3 · Open a new account.** Right-click **Accounts → Open an account** to bring up the broker-server search.
 
-**Finding the Navigator Panel:**
+**4 · Pick the MetaQuotes demo server.** Find **MetaQuotes-Demo** (search if needed) and click **Next**.
 
-The **Navigator** panel is usually located on the **left side** of the screen, below the **Market Watch** panel.
+![MetaQuotes server selection](../Guide_Images/2.%20META.png)
 
-**Inside the Navigator panel** you'll see several sections:
-- Accounts
-- Subscriptions
-- Indicators
-- Expert Advisors
-- And others
+**5 · Choose "Open a new demo account"** and click **Next**.
 
----
+![Open a new demo account](../Guide_Images/3.%20OPEN.png)
 
-### Step 3️⃣: Opening a New Demo Account
+**6 · Fill in the form** (name, email; virtual deposit e.g. `$10,000`, leverage `1:100`, currency `USD`), accept the terms, **Next**.
 
-1. In the **Navigator** panel, find the **Accounts** section
-2. **Right-click** on "Accounts"
-3. Select **"Open an account"** from the context menu
+![Account creation form](../Guide_Images/4.%20creator.png)
 
-This will open the broker server search panel.
+**7 · Save your credentials.** MT5 shows your **login**, **password** (master) and **server** (`MetaQuotes-Demo`). **Copy them now** — the SDK needs exactly these three values.
 
----
+![Account credentials](../Guide_Images/5.%20OKK.png)
 
-### Step 4️⃣: Select MetaQuotes Demo Server
-
-In the broker search window, you'll see a list of available MT5 servers.
-
-**For your first demo account, we'll use the simplest option:**
-
-- Look for **"MetaQuotes-Demo"** or **"MetaQuotes Ltd"** in the list
-- This is the standard demo server provided by MetaTrader developers
-- If you don't see it immediately, use the search field at the top to find it
-
-**Select the MetaQuotes server** and click **Next**.
-
-![MetaQuotes Server Selection](../Guide_Images/2.%20META.png)
+> Two passwords are shown: the **master** password trades; the **investor** password is read-only. Use the master password with the SDK.
 
 ---
 
-### Step 5️⃣: Account Type Selection
+## The money words
 
-On the next screen, you'll have options:
+| Term | In one line |
+| ---- | ----------- |
+| **Balance** | Your settled money (no open trades counted). |
+| **Equity** | Balance **plus** the profit/loss of trades you have open right now. |
+| **Margin** | Money "reserved" while a trade is open. |
+| **Free margin** | What's left to open new trades. |
 
-- **Open a new demo account** (top option)
-- Log into an existing account (demo or live)
-
-**Select "Open a new demo account"** and click **Next**.
-
-![Open New Demo Account](../Guide_Images/3.%20OPEN.png)
-
-
----
-
-### Step 6️⃣: Fill in Your Personal Information
-
-Now you'll see a form requesting your details:
-
-- **Name**: Your first name
-- **Last Name**: Your last name
-- **Email**: Your email address
-- **Phone**: Optional (can skip for demo)
-- **Account Type**: Choose your preferred account settings
-- **Deposit**: Virtual amount (e.g., $10,000)
-- **Leverage**: 1:100 is a good starting point
-- **Currency**: USD, EUR, etc.
-
-**Check the box** to agree to the terms and conditions, then click **Next**.
-
-![Personal Information Form](../Guide_Images/4.%20creator.png)
+When you open a trade, equity moves tick by tick. When you close it, the result folds into balance.
 
 ---
 
-### Step 7️⃣: Save Your Account Credentials
+## Buying and selling
 
-MT5 will now create your demo account and display your credentials:
+* **Buy** (go long) — you profit if the price **rises**.
+* **Sell** (go short) — you profit if the price **falls**.
 
-**Important credentials displayed:**
+You trade in **lots** (volume). `0.01` is a micro lot — the smallest typical size, perfect for learning.
 
-- **Login**: Your account number (e.g., 591129415)
-- **Password**: Your master password for trading
-- **Investor Password**: Read-only password (for monitoring)
-- **Server**: Server name (e.g., "MetaQuotes-Demo")
+Two ways to enter:
 
-**⚠️ CRITICALLY IMPORTANT**: **Save these credentials immediately!** You'll need them for:
-- Logging back into MT5
-- Configuring PyMT5 in `examples/0_common/settings.json`
-
-Click **Finish** to complete account creation.
-
-![Account Credentials](../Guide_Images/5.%20OKK.png)
+* **Market order** — fill **now** at the current price.
+* **Pending order** — wait for a price. A **LIMIT** waits for a better price; a **STOP** waits for a breakout.
 
 ---
 
-### Step 8️⃣: Configure PyMT5 with Your Credentials
+## Protecting a trade
 
-Now that you have an MT5 demo account, you need to configure PyMT5 to connect to it.
+* **Stop-Loss (SL)** — auto-close if the price goes against you by so much. Caps the loss.
+* **Take-Profit (TP)** — auto-close once you've made your target.
 
-1. Open your PyMT5 project
-2. Navigate to **`examples/0_common/settings.json`**
-3. Fill in the credentials you just saved:
+Set them as prices — compute the distances from **pips** (`pip = point × 10` on a 5-digit symbol):
 
+```ruby
+pip    = mt5.symbol_point("EURUSD") * 10
+digits = mt5.symbol_digits("EURUSD")
+q      = mt5.price("EURUSD")
 
-```json
-{
-  "user": 591129415,
-  "password": "YourPasswordHere",
-  "host": "mt5.mrpc.pro",
-  "port": 443,
-  "grpc_server": "mt5.mrpc.pro:443",
-  "mt_cluster": "MetaQuotes-Demo",
-  "test_symbol": "EURUSD",
-  "test_volume": 0.01
-}
+# 20-pip stop, 40-pip target
+mt5.buy_market_with_sl_tp("EURUSD", 0.01,
+  sl: (q.bid - 20 * pip).round(digits),
+  tp: (q.ask + 40 * pip).round(digits))
 ```
 
-**Important notes:**
-
-- **user**: Replace with your login number
-- **password**: Replace with your password
-- **mt_cluster**: Use the exact server name from MT5 (e.g., "MetaQuotes-Demo")
-- **host, port, grpc_server**: Provided by MetaRPC team (leave as is)
+See [Risk Management](../MT5Sugar/11.%20Risk_Management.md) for sizing a trade to a fixed risk.
 
 ---
 
-### Step 9️⃣: Verify MT5 Connection
+## MT5's model: orders, positions, deals
 
-Back in the MT5 terminal:
+This trips up newcomers, so remember:
 
-1. MT5 should automatically log you into your new demo account
-2. Check the **bottom right corner** of the terminal window - you should see:
-   - **Green connection indicator** (means connected to server)
-   - **Your account balance** (e.g., $10,000)
+* An **order** is the *instruction*.
+* A **position** is the resulting *open trade*.
+* A **deal** is each *execution* (fill) that builds a position.
 
-**You're now ready to test!**
-
----
-
-### Step 🔟: Start Testing PyMT5
-
-With your MT5 demo account created and `settings.json` configured, you can start running examples:
-
-```bash
-# Navigate to the examples folder
-cd examples
-
-# Run your first example
-python main.py 1
-
-# Or run interactively
-python main.py
-```
-
-When trading operations occur, your demo account balance will increase or decrease accordingly. **Experiment freely** - it's virtual money, so there's no risk!
-
-All trades executed by PyMT5 will appear in your MT5 terminal in real-time.
+On MT5 these are **separate** things (unlike MT4). A filled market BUY gives you a **position**, identified by a **ticket**.
 
 ---
 
-## 🧩 Understanding MT5 Password Types
+## Your first 10 lines
 
-MT5 uses **two types of passwords** for security and flexibility:
+```ruby
+require "metarpc_mt5"
 
-### Master Password (Main Password)
+mt5 = MetaRPC::MT5::MT5Sugar.create("mt5.mrpc.pro", 443, api_key: ENV["MRPC_API_KEY"])
+mt5.quick_connect(login, "password", "MetaQuotes-Demo")
 
-- **Full access** to your trading account
-- Can open/close trades, deposit/withdraw funds, change settings
-- **This is the password you created** during account registration
-- Use this password for:
-  - Trading (including PyMT5 applications)
-  - Changing account settings
-  - Withdrawing funds (live accounts)
-
-### Investor Password (Read-Only Password)
-
-- **View-only access** to your account
-- Can see trades, balance, history - **but cannot trade**
-- Useful for:
-  - Sharing your trading performance with others (investors, friends)
-  - Monitoring your account without risk
-  - Audit and analytics tools
-
-**How to get your investor password:**
-
-1. In MT5, go to **Tools → Options**
-2. Select the **Server** tab
-3. Click **Change** next to "Investor Password"
-4. Set a new investor password
-
----
-
-## Choosing a Broker (Optional)
-
-While you can use the MetaQuotes demo server for practice, you may want to choose a specific broker for:
-
-- Live trading later
-- Better demo conditions (spreads, instruments)
-- Specific regional support
-
-### Popular MT5 Brokers:
-
-**Note**: This is not financial advice. Always do your own research before choosing a broker.
-
-- **IC Markets** - Popular for forex and low spreads
-- **Pepperstone** - Well-regulated, beginner-friendly
-- **OANDA** - Strong reputation, accepts US clients
-- **XM** - Easy account opening, many account types
-- **RoboForex** - Good for automated trading
-- **FxPro** - Excellent demo trading conditions (used in PyMT5 examples)
-
-### What to look for:
-
-- ✅ **Regulation** - Check if regulated by FCA, ASIC, CySEC, etc.
-
-- ✅ **MT5 Support** - Make sure they offer MT5 (not just MT4).
-
-- ✅ **Demo Account** - Free demo without expiration (though demo accounts typically last 30 days, then become inactive).
-
-- ✅ **Good Spreads** - Lower spreads = lower trading costs.
-
-- ✅ **Customer Support** - Responsive support in your language.
-
----
-
-
----
-
-## What's Next?
-
-Now that you have a demo account and understand the basics, you're ready for:
-
-### 1. Setting Up PyMT5
-
-Follow our main getting started guide to connect PyMT5 to your MT5 account:
-
-👉 **[Getting Started with PyMT5](GETTING_STARTED.md)**
-
-### 2. Understanding API Architecture
-
-PyMT5 is built in **three levels**, from low-level to high-level. You can choose where to start depending on your needs:
-
-#### Level 1: MT5Account (Low-Level gRPC Foundation)
-👉 **[MT5Account Overview](../API_Reference/MT5Account.md)**
-
-- **Direct gRPC calls** to MT5 terminal
-- **Foundation of everything** - all other levels use this internally
-- Maximum control and flexibility
-- Best for: Advanced users who need fine-grained control
-
-#### Level 2: MT5Service (Convenient Wrappers)
-👉 **[MT5Service Overview](../API_Reference/MT5Service.md)**
-
-- **Wrapper methods** over MT5Account gRPC calls
-- Simplified error handling and response parsing
-- Easier to work with than raw gRPC
-- Best for: Most common trading scenarios
-
-#### Level 3: MT5Sugar (High-Level Helpers)
-👉 **[MT5Sugar API Overview](../API_Reference/MT5Sugar.md)**
-
-- **Syntactic sugar** and convenience methods
-- Chainable operations, smart defaults
-- Most intuitive and beginner-friendly
-- Best for: Rapid prototyping and simple strategies
-
----
-
-## Important Reminders
-
-### 🛡️ Security
-
-- **Never share your master password** with anyone
-- Use investor password for monitoring/analytics tools
-- Keep your credentials safe (use password managers)
-
-### 📊 Risk Management
-
-- Demo accounts are **risk-free**, but form good habits:
-  - Always use Stop Loss
-  - Don't risk more than 1-2% per trade
-  - Understand position sizing calculations
-
-### 🧪 Testing
-
-- Test all your PyMT5 code **on demo first**
-- Verify strategies over weeks/months, not days
-- Paper trading (demo) doesn't guarantee live results
-
-### 📚 Education
-
-- Trading has a steep learning curve
-- Focus on learning, not earning
-- Consider courses, books, and communities
-
----
-
-## Useful Python Commands
-
-### Installation
-
-```bash
-# Install PyMT5 package with all dependencies
-pip install MetaRpcMT5
-```
-
-### Running Examples
-
-```bash
-# Navigate to examples folder first
-cd examples
-
-# Option 1: Run specific example by number
-python main.py 1
-
-# Option 2: Interactive menu
-python main.py
-
-# Option 3: Run example file directly
-python 1_lowlevel/01_general_operations.py
-python 3_sugar/06_sugar_basics.py
-```
-
-### Checking Environment
-
-```bash
-# Verify Python version (requires 3.8+)
-python --version
+puts "balance #{mt5.balance.round(2)}"
+r = mt5.buy_market("EURUSD", 0.01)          # tiny demo trade
+mt5.close_position(r.order)                  # r.order is the position ticket
 ```
 
 ---
 
-**Ready to start coding?** Head over to [Getting Started](GETTING_STARTED.md) to connect PyMT5 to your MT5 account!
+## Next steps
 
-**Good luck with your trading journey! 🚀**
+* [Getting Started](./GETTING_STARTED.md) — install and connect properly.
+* [Your First Project](./Your_First_Project.md) — build something small.
+* [Glossary](./GLOSSARY.md) — every term, defined.
+* [MT5Sugar](../MT5Sugar/MT5Sugar.API_Overview.md) — the friendliest API.

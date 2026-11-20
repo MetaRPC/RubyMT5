@@ -1,244 +1,134 @@
-# ENUMs Usage Reference - MT5Account (Python)
+# ENUMs Usage Reference — MT5Account
 
-
-
-> ENUM presence lookup table for all MT5Account low-level methods
-
-
+> Which low-level `MT5Account` methods take or return protobuf enums, and how you pass them in Ruby.
 
 ---
 
-
-
-## ✅ Summary Statistics
-
-
-
-| Method Group | With ENUMs | Total | Percentage |
-|--------------|------------|-------|------------|
-| **Account Information** | 4 | 4 | 100% |
-| **Symbol Information** | 7 | 13 | 54% |
-| **Positions & Orders** | 3 | 6 | 50% |
-| **Market Depth/DOM** | 1 | 3 | 33% |
-| **Trading Operations** | 6 | 6 | 100% |
-| **Streaming Methods** | 3 | 5 | 60% |
-| **TOTAL** | **24** | **37** | **65%** |
-
-
-
----
-
-
-
-
-
-## 👤 1. Account Information (4 methods)
-
-
-
-### 4/4 methods use ENUMs (100%)
-
-
-
-| Method | ENUMs Count | Description | Input ENUMs | Output ENUMs |
-|--------|-------------|-------------|-------------|--------------|
-| **account_summary** | **[In: 0, Out: 1]**<br>Total: 1 ENUM (3 values) | Get all account data in one call (RECOMMENDED) | - | `MrpcEnumAccountTradeMode` (3 values) - Account type: DEMO, CONTEST, REAL |
-| **account_info_double** | **[In: 1, Out: 0]**<br>Total: 1 ENUM (14 values) | Get double properties (Balance, Equity, Margin, etc.) | `AccountInfoDoublePropertyType` (14 values): ACCOUNT_BALANCE, ACCOUNT_CREDIT, ACCOUNT_PROFIT, ACCOUNT_EQUITY, ACCOUNT_MARGIN, ACCOUNT_MARGIN_FREE, ACCOUNT_MARGIN_LEVEL, ACCOUNT_MARGIN_SO_CALL, ACCOUNT_MARGIN_SO_SO, ACCOUNT_MARGIN_INITIAL, ACCOUNT_MARGIN_MAINTENANCE, ACCOUNT_ASSETS, ACCOUNT_LIABILITIES, ACCOUNT_COMMISSION_BLOCKED | - |
-| **account_info_integer** | **[In: 1, Out: 0]**<br>Total: 1 ENUM (11 values) | Get integer properties (Login, Leverage, etc.) | `AccountInfoIntegerPropertyType` (11 values): ACCOUNT_LOGIN, ACCOUNT_TRADE_MODE, ACCOUNT_LEVERAGE, ACCOUNT_LIMIT_ORDERS, ACCOUNT_MARGIN_SO_MODE, ACCOUNT_TRADE_ALLOWED, ACCOUNT_TRADE_EXPERT, ACCOUNT_MARGIN_MODE, ACCOUNT_CURRENCY_DIGITS, ACCOUNT_FIFO_CLOSE, ACCOUNT_HEDGE_ALLOWED | - |
-| **account_info_string** | **[In: 1, Out: 0]**<br>Total: 1 ENUM (4 values) | Get string properties (Currency, Company, etc.) | `AccountInfoStringPropertyType` (4 values): ACCOUNT_NAME, ACCOUNT_SERVER, ACCOUNT_CURRENCY, ACCOUNT_COMPANY | - |
-
-
-
----
-
-
-
-## 📊 2. Symbol Information (13 methods)
-
-
-
-### 7/13 methods use ENUMs (54%)
-
-
-
-| Method | ENUMs Count | Description | Input ENUMs | Output ENUMs |
-|--------|-------------|-------------|-------------|--------------|
-| **symbols_total** | **[In: 0, Out: 0]**<br>Total: 0 ENUMs | Count total/selected symbols | - | - |
-| **symbol_exist** | **[In: 0, Out: 0]**<br>Total: 0 ENUMs | Check if symbol exists | - | - |
-| **symbol_name** | **[In: 0, Out: 0]**<br>Total: 0 ENUMs | Get symbol name by index | - | - |
-| **symbol_select** | **[In: 0, Out: 0]**<br>Total: 0 ENUMs | Add/remove symbol from Market Watch | - | - |
-| **symbol_is_synchronized** | **[In: 0, Out: 0]**<br>Total: 0 ENUMs | Check sync status with server | - | - |
-| **symbol_info_double** | **[In: 1, Out: 0]**<br>Total: 1 ENUM (60 values) | Get double properties (Bid, Ask, Point, etc.) | `SymbolInfoDoubleProperty` (60 values) - Property selector | - |
-| **symbol_info_integer** | **[In: 1, Out: 0]**<br>Total: 1 ENUM (37 values) | Get integer properties (Digits, Spread, etc.) | `SymbolInfoIntegerProperty` (37 values) - Property selector | - |
-| **symbol_info_string** | **[In: 1, Out: 0]**<br>Total: 1 ENUM (15 values) | Get string properties (Description, etc.) | `SymbolInfoStringProperty` (15 values) - Property selector | - |
-| **symbol_info_margin_rate** | **[In: 1, Out: 0]**<br>Total: 1 ENUM (9 values) | Get margin requirements for order types | `ENUM_ORDER_TYPE` (9 values) - Order type | - |
-| **symbol_info_tick** | **[In: 0, Out: 0]**<br>Total: 0 ENUMs | Get last tick data with timestamp | - | - |
-| **symbol_info_session_quote** | **[In: 1, Out: 0]**<br>Total: 1 ENUM (7 values) | Get quote session times | `BMT5_ENUM_DAY_OF_WEEK` (7 values) - Day of week | - |
-| **symbol_info_session_trade** | **[In: 1, Out: 0]**<br>Total: 1 ENUM (7 values) | Get trade session times | `BMT5_ENUM_DAY_OF_WEEK` (7 values) - Day of week | - |
-| **symbol_params_many** | **[In: 1, Out: 13]**<br>Total: 14 ENUMs | Get detailed parameters for multiple symbols | `AH_SYMBOL_PARAMS_MANY_SORT_TYPE` (4 values) - Sort mode | **13 ENUMs in SymbolParameters:** BMT5_ENUM_SYMBOL_SECTOR, BMT5_ENUM_SYMBOL_INDUSTRY, BMT5_ENUM_SYMBOL_CHART_MODE, BMT5_ENUM_SYMBOL_CALC_MODE, BMT5_ENUM_SYMBOL_TRADE_MODE, BMT5_ENUM_SYMBOL_TRADE_EXECUTION, BMT5_ENUM_SYMBOL_SWAP_MODE, BMT5_ENUM_DAY_OF_WEEK, BMT5_ENUM_ORDER_TYPE_FILLING, BMT5_ENUM_ORDER_TYPE, BMT5_ENUM_SYMBOL_ORDER_GTC_MODE, BMT5_ENUM_SYMBOL_OPTION_MODE, BMT5_ENUM_SYMBOL_OPTION_RIGHT |
-
-
-
----
-
-
-
-## 📋 3. Positions & Orders Information (6 methods)
-
-
-
-### 3/6 methods use ENUMs (50%)
-
-
-
-| Method | ENUMs Count | Description | Input ENUMs | Output ENUMs |
-|--------|-------------|-------------|-------------|--------------|
-| **positions_total** | **[In: 0, Out: 0]**<br>Total: 0 ENUMs | Count open positions | - | - |
-| **opened_orders** | **[In: 1, Out: 6]**<br>Total: 7 ENUMs | Get all opened orders & positions | `BMT5_ENUM_OPENED_ORDER_SORT_TYPE` (4 values) - Sort mode | **6 ENUMs:**<br>**In PositionInfo:** BMT5_ENUM_POSITION_TYPE, BMT5_ENUM_POSITION_REASON<br>**In OpenedOrderInfo:** BMT5_ENUM_ORDER_TYPE, BMT5_ENUM_ORDER_STATE, BMT5_ENUM_ORDER_TYPE_FILLING, BMT5_ENUM_ORDER_TYPE_TIME |
-| **opened_orders_tickets** | **[In: 0, Out: 0]**<br>Total: 0 ENUMs | Get only ticket numbers (lightweight) | - | - |
-| **order_history** | **[In: 1, Out: 7]**<br>Total: 8 ENUMs | Get historical orders with pagination | `BMT5_ENUM_ORDER_HISTORY_SORT_TYPE` (6 values) - Sort mode | **7 ENUMs:**<br>**In OrderHistoryData:** BMT5_ENUM_ORDER_STATE, BMT5_ENUM_ORDER_TYPE, BMT5_ENUM_ORDER_TYPE_FILLING, BMT5_ENUM_ORDER_TYPE_TIME<br>**In DealHistoryData:** BMT5_ENUM_DEAL_ENTRY_TYPE, BMT5_ENUM_DEAL_TYPE, BMT5_ENUM_DEAL_REASON |
-| **positions_history** | **[In: 1, Out: 1]**<br>Total: 2 ENUMs | Get historical positions with P&L | `AH_ENUM_POSITIONS_HISTORY_SORT_TYPE` (4 values) - Sort mode | `AH_ENUM_POSITIONS_HISTORY_ORDER_TYPE` (9 values) - Order type |
-| **tick_value_with_size** | **[In: 0, Out: 0]**<br>Total: 0 ENUMs | Get tick value and size for symbols | - | - |
-
-
-
----
-
-
-
-## 📚 4. Market Depth / DOM (3 methods)
-
-
-
-### 1/3 methods use ENUMs (33%)
-
-
-
-| Method | ENUMs Count | Description | Input ENUMs | Output ENUMs |
-|--------|-------------|-------------|-------------|--------------|
-| **market_book_add** | **[In: 0, Out: 0]**<br>Total: 0 ENUMs | Subscribe to Depth of Market updates | - | - |
-| **market_book_release** | **[In: 0, Out: 0]**<br>Total: 0 ENUMs | Unsubscribe from DOM | - | - |
-| **market_book_get** | **[In: 0, Out: 1]**<br>Total: 1 ENUM (4 values) | Get current market depth snapshot | - | `BookType` (4 values) - Order type in book: BOOK_TYPE_SELL, BOOK_TYPE_BUY, BOOK_TYPE_SELL_MARKET, BOOK_TYPE_BUY_MARKET |
-
-
-
----
-
-
-
-## 💰 5. Trading Operations (6 methods)
-
-
-
-### 6/6 methods use ENUMs (100%)
-
-
-
-| Method | ENUMs Count | Description | Input ENUMs | Output ENUMs |
-|--------|-------------|-------------|-------------|--------------|
-| **order_send** | **[In: 2, Out: 0]**<br>Total: 2 ENUMs (13 values) | Send market or pending order | **2 ENUMs:**<br>`TMT5_ENUM_ORDER_TYPE` (9 values) - Order type<br>`TMT5_ENUM_ORDER_TYPE_TIME` (4 values) - Order lifetime | - |
-| **order_modify** | **[In: 1, Out: 0]**<br>Total: 1 ENUM (4 values) | Modify existing order parameters | `TMT5_ENUM_ORDER_TYPE_TIME` (4 values) - Order lifetime | - |
-| **order_close** | **[In: 0, Out: 1]**<br>Total: 1 ENUM (3 values) | Close market or pending order | - | `MRPC_ORDER_CLOSE_MODE` (3 values): MRPC_MARKET_ORDER_CLOSE, MRPC_MARKET_ORDER_PARTIAL_CLOSE, MRPC_PENDING_ORDER_REMOVE |
-| **order_check** | **[In: 4, Out: 0]**<br>Total: 4 ENUMs (23 values) | Validate order before sending | **4 ENUMs in MrpcMqlTradeRequest:**<br>`MRPC_ENUM_TRADE_REQUEST_ACTIONS` (6 values) - Trade action type<br>`ENUM_ORDER_TYPE_TF` (9 values) - Order type<br>`MRPC_ENUM_ORDER_TYPE_FILLING` (4 values) - Order filling policy<br>`MRPC_ENUM_ORDER_TYPE_TIME` (4 values) - Order lifetime | - |
-| **order_calc_margin** | **[In: 1, Out: 0]**<br>Total: 1 ENUM (9 values) | Calculate required margin | `ENUM_ORDER_TYPE_TF` (9 values) - Order type | - |
-| **order_calc_profit** | **[In: 1, Out: 0]**<br>Total: 1 ENUM (9 values) | Calculate potential profit/loss | `ENUM_ORDER_TYPE_TF` (9 values) - Order type | - |
-
-
-
----
-
-
-
-## 📡 6. Streaming Methods (5 methods)
-
-
-
-### 3/5 methods use ENUMs (60%)
-
-
-
-| Method | ENUMs Count | Description | Input ENUMs | Output ENUMs |
-|--------|-------------|-------------|-------------|--------------|
-| **on_symbol_tick** | **[In: 0, Out: 0]**<br>Total: 0 ENUMs | Stream tick data (Bid/Ask updates) | - | - |
-| **on_trade** | **[In: 0, Out: 1]**<br>Total: 11 ENUMs (68 values) | Stream trade events | - | **1 direct + 10 in nested structures:**<br>1. `MT5_SUB_ENUM_EVENT_GROUP_TYPE` (2 values) - OnTradeData.type<br>2-11. **In event_data nested structures:** SUB_ENUM_POSITION_TYPE (2), SUB_ENUM_POSITION_REASON (7), SUB_ENUM_ORDER_TYPE (9), SUB_ENUM_ORDER_STATE (10), SUB_ENUM_DEAL_TYPE (8), SUB_ENUM_ORDER_TYPE_TIME (4), SUB_ENUM_ORDER_TYPE_FILLING (4), SUB_ENUM_ORDER_REASON (7), SUB_ENUM_DEAL_ENTRY (4), SUB_ENUM_DEAL_REASON (11) |
-| **on_position_profit** | **[In: 0, Out: 1]**<br>Total: 1 ENUM (2 values) | Stream position P&L updates | - | `MT5_SUB_ENUM_EVENT_GROUP_TYPE` (2 values) - Event type in OnPositionProfitData.type field |
-| **on_positions_and_pending_orders_tickets** | **[In: 0, Out: 0]**<br>Total: 0 ENUMs | Stream ticket changes | - | - |
-| **on_trade_transaction** | **[In: 0, Out: 9]**<br>Total: 9 ENUMs (107 values) | Stream trade transaction events | - | **11 ENUM fields from 9 unique types:**<br>1. `MT5_SUB_ENUM_EVENT_GROUP_TYPE` (2 values) - OnTradeTransactionData.type<br>2-6. **In MqlTradeTransaction:** SUB_ENUM_TRADE_TRANSACTION_TYPE (11 values), SUB_ENUM_ORDER_TYPE (9 values), SUB_ENUM_ORDER_STATE (10 values), SUB_ENUM_DEAL_TYPE (18 values), SUB_ENUM_ORDER_TYPE_TIME (4 values)<br>7-10. **In MqlTradeRequest:** SUB_ENUM_TRADE_REQUEST_ACTIONS (7 values), SUB_ENUM_ORDER_TYPE (9 values), SUB_ENUM_ORDER_TYPE_FILLING (4 values), SUB_ENUM_ORDER_TYPE_TIME (4 values)<br>11. **In MqlTradeResult:** MqlErrorTradeCode (42 values) |
-
-
-
----
-
-
-
-## Important Notes
-
-
-
-### Python ENUM Access
-
-Python accesses ENUMs through protobuf modules:
-
-**Correct:**
-```python
-from MetaRpcMT5 import mt5_term_api_account_information_pb2 as account_info_pb2
-
-# Using ENUM
-property_id = account_info_pb2.AccountInfoDoublePropertyType.ACCOUNT_BALANCE
+## 💎 How enums work in Ruby
+
+In the Ruby protobuf runtime, **an enum value is a Ruby symbol** — both when you pass it in and when you read it back. There are no module constants to import (unlike Python/Node): you write the value's name as a `:SYMBOL`.
+
+```ruby
+# IN — a property selector enum, passed as a symbol:
+balance  = mt5.account.account_info_double(:ACCOUNT_BALANCE)      # AccountInfoDoublePropertyType
+leverage = mt5.account.account_info_integer(:ACCOUNT_LEVERAGE)    # AccountInfoIntegerPropertyType
+digits   = mt5.account.symbol_info_integer("EURUSD", :SYMBOL_DIGITS)
+
+# OUT — an enum-typed field reads back as a symbol:
+acc = mt5.account.account_summary
+acc.account_trade_mode        # => :MRPC_ACCOUNT_TRADE_MODE_DEMO   (MrpcEnumAccountTradeMode)
 ```
 
-**Incorrect:**
-```python
-ACCOUNT_BALANCE  # NameError: name 'ACCOUNT_BALANCE' is not defined
+**Don't know a value's exact spelling?** List any enum with the [Protobuf Inspector](./PROTOBUF_INSPECTOR_GUIDE.md):
+
+```bash
+ruby examples/demos/helpers/17_protobuf_inspector.rb enum AccountInfoDoublePropertyType
+ruby examples/demos/helpers/17_protobuf_inspector.rb whereenum TMT5_ENUM_ORDER_TYPE
 ```
 
-
-
-### Special Cases
-
-
-
-**1. AccountInfoInteger and SymbolInfoInteger:**
-
-- Some properties return values that **represent ENUMs**, but are returned as `int64`
-
-- These are **NOT typed ENUMs**, just numbers!
-
-
-
-**2. ReturnedCode:**
-
-- ReturnedCode field in trading operations is **NOT an ENUM**
-
-- It's a plain uint32 operation return code
-
-
+> **Mind the context.** Order-type lives in **separate enums** per call: `TMT5_ENUM_ORDER_TYPE` (order_send), `ENUM_ORDER_TYPE_TF` (calculators / order_check), `ENUM_ORDER_TYPE` (margin rate), `SUB_ENUM_ORDER_TYPE` (streaming). See the table in [Return Codes](./RETURN_CODES_REFERENCE.md) and [Protobuf Inspector](./PROTOBUF_INSPECTOR_GUIDE.md).
 
 ---
 
+## ✅ Summary
 
+| Method Group | With enums | Total | % |
+|--------------|-----------|-------|---|
+| Account Information | 4 | 4 | 100% |
+| Symbol Information | 7 | 13 | 54% |
+| Positions & Orders | 3 | 6 | 50% |
+| Market Depth / DOM | 1 | 3 | 33% |
+| Trading Operations | 6 | 6 | 100% |
+| Streaming Methods | 3 | 5 | 60% |
+| **Total** | **24** | **37** | **65%** |
+
+---
+
+## 👤 1. Account Information — 4/4 use enums
+
+| Method | In / Out | Input enum | Output enum |
+|--------|----------|------------|-------------|
+| `account_summary` | 0 / 1 | — | `MrpcEnumAccountTradeMode` (3): DEMO, CONTEST, REAL |
+| `account_info_double` | 1 / 0 | `AccountInfoDoublePropertyType` (14): `:ACCOUNT_BALANCE`, `:ACCOUNT_EQUITY`, `:ACCOUNT_MARGIN`, `:ACCOUNT_MARGIN_FREE`, `:ACCOUNT_MARGIN_LEVEL`, … | — |
+| `account_info_integer` | 1 / 0 | `AccountInfoIntegerPropertyType` (11): `:ACCOUNT_LOGIN`, `:ACCOUNT_TRADE_MODE`, `:ACCOUNT_LEVERAGE`, `:ACCOUNT_MARGIN_MODE`, … | — |
+| `account_info_string` | 1 / 0 | `AccountInfoStringPropertyType` (4): `:ACCOUNT_NAME`, `:ACCOUNT_SERVER`, `:ACCOUNT_CURRENCY`, `:ACCOUNT_COMPANY` | — |
+
+---
+
+## 📊 2. Symbol Information — 7/13 use enums
+
+| Method | In / Out | Input enum | Output enum |
+|--------|----------|------------|-------------|
+| `symbols_total` · `symbol_exist` · `symbol_name` · `symbol_select` · `symbol_is_synchronized` · `symbol_info_tick` | 0 / 0 | — | — |
+| `symbol_info_double` | 1 / 0 | `SymbolInfoDoubleProperty` (60) — e.g. `:SYMBOL_BID`, `:SYMBOL_ASK`, `:SYMBOL_POINT` | — |
+| `symbol_info_integer` | 1 / 0 | `SymbolInfoIntegerProperty` (37) — e.g. `:SYMBOL_DIGITS`, `:SYMBOL_SPREAD` | — |
+| `symbol_info_string` | 1 / 0 | `SymbolInfoStringProperty` (15) | — |
+| `symbol_info_margin_rate` | 1 / 0 | `ENUM_ORDER_TYPE` (9) — MQL order type | — |
+| `symbol_info_session_quote` | 1 / 0 | `DayOfWeek` (7): `:SUNDAY` … `:SATURDAY` | — |
+| `symbol_info_session_trade` | 1 / 0 | `DayOfWeek` (7): `:SUNDAY` … `:SATURDAY` | — |
+| `symbol_params_many` | 1 / 13 | `AH_SYMBOL_PARAMS_MANY_SORT_TYPE` (4) | 13 enums in `SymbolParameters`: `BMT5_ENUM_SYMBOL_SECTOR`, `BMT5_ENUM_SYMBOL_INDUSTRY`, `BMT5_ENUM_SYMBOL_CHART_MODE`, `BMT5_ENUM_SYMBOL_CALC_MODE`, `BMT5_ENUM_SYMBOL_TRADE_MODE`, `BMT5_ENUM_SYMBOL_TRADE_EXECUTION`, `BMT5_ENUM_SYMBOL_SWAP_MODE`, `BMT5_ENUM_DAY_OF_WEEK`, `BMT5_ENUM_ORDER_TYPE_FILLING`, `BMT5_ENUM_ORDER_TYPE`, `BMT5_ENUM_SYMBOL_ORDER_GTC_MODE`, `BMT5_ENUM_SYMBOL_OPTION_MODE`, `BMT5_ENUM_SYMBOL_OPTION_RIGHT` |
+
+---
+
+## 📋 3. Positions & Orders — 3/6 use enums
+
+| Method | In / Out | Input enum | Output enum |
+|--------|----------|------------|-------------|
+| `positions_total` · `opened_orders_tickets` · `tick_value_with_size` | 0 / 0 | — | — |
+| `opened_orders` | 1 / 6 | `BMT5_ENUM_OPENED_ORDER_SORT_TYPE` (4) | in `PositionInfo`: `BMT5_ENUM_POSITION_TYPE`, `BMT5_ENUM_POSITION_REASON`; in `OpenedOrderInfo`: `BMT5_ENUM_ORDER_TYPE`, `BMT5_ENUM_ORDER_STATE`, `BMT5_ENUM_ORDER_TYPE_FILLING`, `BMT5_ENUM_ORDER_TYPE_TIME` |
+| `order_history` | 1 / 4 | `BMT5_ENUM_ORDER_HISTORY_SORT_TYPE` (6) | in `OrderHistoryData` (orders only — no deal rows): `BMT5_ENUM_ORDER_STATE`, `BMT5_ENUM_ORDER_TYPE`, `BMT5_ENUM_ORDER_TYPE_FILLING`, `BMT5_ENUM_ORDER_TYPE_TIME` |
+| `positions_history` | 1 / 1 | `AH_ENUM_POSITIONS_HISTORY_SORT_TYPE` (4) | `AH_ENUM_POSITIONS_HISTORY_ORDER_TYPE` (9) |
+
+---
+
+## 📚 4. Market Depth / DOM — 1/3 use enums
+
+| Method | In / Out | Input enum | Output enum |
+|--------|----------|------------|-------------|
+| `market_book_add` · `market_book_release` | 0 / 0 | — | — |
+| `market_book_get` | 0 / 1 | — | `BookType` (4): `BOOK_TYPE_SELL`, `BOOK_TYPE_BUY`, `BOOK_TYPE_SELL_MARKET`, `BOOK_TYPE_BUY_MARKET` |
+
+---
+
+## 💰 5. Trading Operations — 6/6 use enums
+
+| Method | In / Out | Input enum | Output enum |
+|--------|----------|------------|-------------|
+| `order_send` | 2 / 0 | `TMT5_ENUM_ORDER_TYPE` (9) + `TMT5_ENUM_ORDER_TYPE_TIME` (4) | — |
+| `order_modify` | 1 / 0 | `TMT5_ENUM_ORDER_TYPE_TIME` (4) | — |
+| `order_close` | 0 / 1 | — | `MRPC_ORDER_CLOSE_MODE` (3): `MRPC_MARKET_ORDER_CLOSE`, `MRPC_MARKET_ORDER_PARTIAL_CLOSE`, `MRPC_PENDING_ORDER_REMOVE` |
+| `order_check` | 4 / 0 | in `MrpcMqlTradeRequest`: `MRPC_ENUM_TRADE_REQUEST_ACTIONS` (6), `ENUM_ORDER_TYPE_TF` (9), `MRPC_ENUM_ORDER_TYPE_FILLING` (4), `MRPC_ENUM_ORDER_TYPE_TIME` (4) | — |
+| `order_calc_margin` | 1 / 0 | `ENUM_ORDER_TYPE_TF` (9) | — |
+| `order_calc_profit` | 1 / 0 | `ENUM_ORDER_TYPE_TF` (9) | — |
+
+> The `MT5Service` / `MT5Sugar` trade helpers accept a friendly `type:` (e.g. `:buy`, `:sell_limit`) and map it to `TMT5_ENUM_ORDER_TYPE` for you — you only reach for the raw enum at the `MT5Account` level.
+
+---
+
+## 📡 6. Streaming Methods — 3/5 use enums
+
+| Method | In / Out | Output enums |
+|--------|----------|--------------|
+| `on_symbol_tick` · `on_positions_and_pending_orders_tickets` | 0 / 0 | — |
+| `on_position_profit` | 0 / 1 | `MT5_SUB_ENUM_EVENT_GROUP_TYPE` (2) — `OnPositionProfitData.type` |
+| `on_trade` | 0 / 11 | `MT5_SUB_ENUM_EVENT_GROUP_TYPE` (`type`) + nested: `SUB_ENUM_POSITION_TYPE`, `SUB_ENUM_POSITION_REASON`, `SUB_ENUM_ORDER_TYPE`, `SUB_ENUM_ORDER_STATE`, `SUB_ENUM_DEAL_TYPE`, `SUB_ENUM_ORDER_TYPE_TIME`, `SUB_ENUM_ORDER_TYPE_FILLING`, `SUB_ENUM_ORDER_REASON`, `SUB_ENUM_DEAL_ENTRY`, `SUB_ENUM_DEAL_REASON` |
+| `on_trade_transaction` | 0 / 9 | `MT5_SUB_ENUM_EVENT_GROUP_TYPE` (`type`); in `MqlTradeTransaction`: `SUB_ENUM_TRADE_TRANSACTION_TYPE`, `SUB_ENUM_ORDER_TYPE`, `SUB_ENUM_ORDER_STATE`, `SUB_ENUM_DEAL_TYPE`, `SUB_ENUM_ORDER_TYPE_TIME`; in `MqlTradeRequest`: `SUB_ENUM_TRADE_REQUEST_ACTIONS`, `SUB_ENUM_ORDER_TYPE`, `SUB_ENUM_ORDER_TYPE_FILLING`, `SUB_ENUM_ORDER_TYPE_TIME`; in `MqlTradeResult`: `MqlErrorTradeCode` |
+
+---
+
+## ⚠️ Special cases
+
+1. **Result enums — `SYMBOL_SECTOR` / `SYMBOL_INDUSTRY`.** Most selectors just *pick* a property, but two `SymbolInfoIntegerProperty` selectors return a value that is **itself** an enum code: `symbol_info_integer(symbol, :SYMBOL_SECTOR)` returns a `BMT5_ENUM_SYMBOL_SECTOR` value (14 of them) and `:SYMBOL_INDUSTRY` returns a `BMT5_ENUM_SYMBOL_INDUSTRY` value (152). The low-level call hands it back as a plain `int64`, so map the number yourself — `ruby examples/demos/helpers/17_protobuf_inspector.rb enum BMT5_ENUM_SYMBOL_INDUSTRY`. The same values arrive **already typed** on `SymbolParameters.sector` / `.industry` from `symbol_params_many`.
+2. **`returned_code` is not an enum.** On trade results it's a plain `uint32` (though its *names* live in the `MqlErrorTradeCode` enum). See [Return Codes](./RETURN_CODES_REFERENCE.md).
+
+---
 
 ## See Also
 
-
-
-### Documentation by Group:
-
-
-
-- [Account Information Overview](../API_Reference/MT5Account.md)
-
-- [Symbol Information Overview](../API_Reference/MT5Account.md)
-
-- [Positions & Orders Overview](../API_Reference/MT5Account.md)
-
-- [Market Depth Overview](../API_Reference/MT5Account.md)
-
-- [Trading Operations Overview](../API_Reference/MT5Account.md)
-
-- [Streaming Methods Overview](../API_Reference/MT5Account.md)
-
-
-
-
-
+- [1 · Account Information](../MT5Account/1.%20Account_Information/Account_Information.Overview.md)
+- [2 · Symbol Information](../MT5Account/2.%20Symbol_Information/Symbol_Information.Overview.md)
+- [3 · Positions & Orders](../MT5Account/3.%20Position_Orders_Information/Position_Orders_Information.Overview.md)
+- [4 · Trading Operations](../MT5Account/4.%20Trading_Operations/Trading_Operations.Overview.md)
+- [5 · Market Depth (DOM)](../MT5Account/5.%20Market_Depth(DOM)/Market_Depth.Overview.md)
+- [7 · Streaming Methods](../MT5Account/7.%20Streaming_Methods/Streaming_Methods.Overview.md)
+- [Protobuf Inspector](./PROTOBUF_INSPECTOR_GUIDE.md) · [Return Codes](./RETURN_CODES_REFERENCE.md)
