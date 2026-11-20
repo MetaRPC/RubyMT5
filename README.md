@@ -1,8 +1,6 @@
 # RubyMT5 SDK
 
-> Idiomatic Ruby gem SDK for MetaTrader 5 algorithmic trading automation.
-
-> **Note:** releases before October 2026 were a preview whose `Client` returned simulated values (a fixed balance, made-up order tickets). `MetaRPC::MT5::Client` is now a real TLS gRPC client against `mt5.mrpc.pro:443` (connect, account summary, quotes, bars, tick streams, orders, history), verified live on a demo account; see `FLEET_AUDIT.md` for every call signature. The [REST API](https://mrpc.pro/docs-legacy/mt5-client-api) remains available as well.
+> Idiomatic Ruby gem SDK for MetaTrader 5 algorithmic trading automation — a TLS gRPC client for `mt5.mrpc.pro:443` (connect, account summary, quotes, bars, tick streams, orders, history).
 
 [![Docs](https://img.shields.io/badge/docs-RubyMT5-blue.svg)](https://metarpc.github.io/RubyMT5/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -28,7 +26,7 @@ gem "grpc", "~> 1.84.1" if Gem.win_platform?   # Windows: pin to the last versio
 Runtime dependencies: `grpc` (>= 1.60), `google-protobuf` (>= 4.26), `googleapis-common-protos-types`
 (>= 1.4); Ruby >= 3.1. `require "metarpc_mt5"` loads the three layers — `MetaRPC::MT5::MT5Account`
 → `MT5Service` → `MT5Sugar` (alias `Client`) — and the generated `Mt5TermApi::*` gRPC messages.
-See `FLEET_AUDIT.md` for every verified call signature.
+See the [full documentation](https://metarpc.github.io/RubyMT5/) for every method and call signature.
 
 > 🪟 **Windows:** the `grpc` gem ships a prebuilt binary (`x64-mingw-ucrt`) only **through 1.84.1** —
 > 1.85.0+ is source-only and needs a full C/C++ build toolchain. Pin it in **your** Gemfile as shown
