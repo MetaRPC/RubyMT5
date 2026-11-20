@@ -1,461 +1,200 @@
-# User Code Sandbox Guide
+# UserCode Sandbox
 
-## What is this?
+> Your blank canvas inside the demo suite — `sugar` arrives already connected, so you write only the trading logic.
 
-This is **your sandbox** for writing custom MT5 trading code in Python. Connection setup is already done - you only need to add your trading logic!
+---
 
-## 🏁 Quick Start
+## 🏁 Quick start
 
-1. **Case already active in main.py**
-   - Open `examples/main.py`
-   - Case "18" for user code sandbox is ready to use
-
-2. **Open `examples/6_usercode/18_usercode.py`**
-   - Write your code or uncomment examples
-
-3. **Run:**
-   ```bash
-   cd examples
-   python main.py usercode
-   ```
-
-That's it! Your code will execute with full MT5 connection.
-
-## How to use
-
-### Option 1: Uncomment examples
-
-The file contains 5 ready-to-use examples:
-
-```python
-# Example 1: Get account balance (Sugar - easiest)
-# balance = await sugar.get_balance()
-# print(f"Balance: {balance:.2f}")
-```
-
-Just remove `#` to activate!
-
-### Option 2: Write your own code
-
-Add your logic between the markers:
-
-```python
-# =================================================================
-# YOUR CODE HERE
-# =================================================================
-
-# Your trading strategy here...
-
-# TODO: Write your trading logic here
-```
-
-## Available commands
-
-Run your code with:
+1. Open `examples/demos/usercode/18_usercode.rb`.
+2. Write your code inside the registered block (below the `write your code below` marker).
+3. Run it:
 
 ```bash
-# From examples directory
-python main.py usercode
-python main.py 18
-python main.py user
-python main.py sandbox
+ruby examples/demos/main.rb 18
 ```
 
-## What's already configured
+That's it — the menu connects once, then hands your block a live, connected `sugar`.
 
-+ **Connection** - MT5 terminal connected via gRPC
+The sandbox as it ships:
 
-+ **Configuration** - Loaded from `examples/0_common/settings.json`
+```ruby
+Demos.register("18", "Sandbox - your own code (edit 18_usercode.rb)") do |sugar, cfg|
+  sym = cfg.test_symbol
 
-+ **account** - Low-level gRPC client (MT5Account)
+  # ─── write your code below ───
+  puts "  balance #{format('%.2f', sugar.balance)}   #{sym} bid #{sugar.bid(sym)}"
 
-+ **service** - Mid-level wrapper (MT5Service)
-
-+ **sugar** - High-level Sugar API (MT5Sugar)
-
-+ **async/await** - All methods are asynchronous
-
-## 🧩 Can I mix API levels?
-
-**Yes!** You can use all three levels in the same file:
-
-```python
-# Low-level (direct gRPC protobuf)
-summary = await account.account_summary()
-balance_pb = summary.account_balance
-
-# Mid-level (MT5Service)
-account_info = await service.get_account_summary()
-balance_svc = account_info.balance
-
-# High-level (MT5Sugar)
-balance_sugar = await sugar.get_balance()
+  #   q    = sugar.service.quote(sym)
+  #   tick = sugar.account.symbol_info_tick(sym)
+  #   sugar.buy_market(sym, cfg.test_volume)   # ⚠ trades on a demo account
+end
 ```
 
-All three variables are available simultaneously:
+> Keep it **read-only** while experimenting, or use tiny volumes on a **demo** account.
 
-- `account` - for full control (gRPC protobuf)
-- `service` - for convenient methods (Service layer)
-- `sugar` - for simplest usage (Sugar API)
+---
 
-## Quick reference
+## 🎁 What's already set up
 
-### Get account information
+The block receives two arguments:
 
-```python
-# Sugar API (easiest)
-balance = await sugar.get_balance()
-print(f"Balance: {balance:.2f}")
+| Argument | What it is |
+|----------|------------|
+| `sugar` | a connected `MT5Sugar` — the high-level one-liners |
+| `cfg` | the loaded config: `cfg.test_symbol`, `cfg.test_volume`, `cfg.user`, `cfg.server`, … |
 
-# Service API (more details)
-account_info = await service.get_account_summary()
-print(f"Balance: {account_info.balance:.2f} {account_info.currency}")
-print(f"Equity:  {account_info.equity:.2f}")
+And from `sugar` you can reach every layer:
 
-# Account API (full control)
-summary = await account.account_summary()
-print(f"Balance: {summary.account_balance:.2f}")
+```ruby
+sugar            # MT5Sugar  — one-liners
+sugar.service    # MT5Service — typed Structs (Quote, Account)
+sugar.account    # MT5Account — raw gRPC / protobuf
 ```
 
-### Get current price
+No `connect` call, no API key handling — the launcher did it. Config comes from `examples/demos/config/config.json` or the `MT5_LOGIN` / `MT5_PASSWORD` / `MT5_SERVER` / `MT5_SYMBOL` / `MT5_VOLUME` env vars.
 
-```python
-# Sugar API
-bid = await sugar.get_bid("EURUSD")
-ask = await sugar.get_ask("EURUSD")
-print(f"EURUSD: Bid={bid:.5f}, Ask={ask:.5f}")
+---
 
-# Service API
-tick = await service.get_symbol_tick("EURUSD")
-print(f"EURUSD Bid: {tick.bid:.5f}, Ask: {tick.ask:.5f}")
+## 🧩 Mixing the three layers
+
+All three are live at once — drop down whenever the sugar layer doesn't expose what you need:
+
+```ruby
+# High — MT5Sugar
+bal = sugar.balance                       # => Float
+
+# Mid — MT5Service (typed Struct)
+q = sugar.service.quote("EURUSD")         # Quote(bid, ask, spread, …)
+
+# Low — MT5Account (raw protobuf)
+tick = sugar.account.symbol_info_tick("EURUSD")   # raw MrpcMqlTick
 ```
 
-### Open market order
+---
 
-```python
-# Sugar API (easiest)
-try:
-    ticket = await sugar.buy_market("EURUSD", 0.01)
-    print(f"Order opened: #{ticket}")
-except Exception as e:
-    print(f"Order failed: {e}")
+## 📘 Quick reference (MT5Sugar)
 
-# With SL/TP in pips
-ticket = await sugar.buy_market_with_pips("EURUSD", 0.01, sl_pips=20, tp_pips=30)
+```ruby
+# ── Account ──────────────────────────────────────────────
+sugar.balance            # Float
+sugar.equity             # balance + floating P/L
+sugar.free_margin        # available to open more
+sugar.margin_level       # %
+sugar.account_info       # Struct(login, balance, currency, leverage, …)
+sugar.demo?              # true on a demo account
 
-# Calculate position size based on risk (2% with 50 pip SL)
-lot_size = await sugar.calculate_position_size("EURUSD", risk_percent=2.0, sl_pips=50)
-ticket = await sugar.buy_market_with_pips("EURUSD", lot_size, sl_pips=50, tp_pips=100)
+# ── Prices ───────────────────────────────────────────────
+sugar.bid("EURUSD")      # Float
+sugar.ask("EURUSD")
+sugar.spread("EURUSD")
+sugar.price("EURUSD")    # Quote(bid, ask, spread, …)
+
+# ── Market orders (return OrderSendData — check returned_code) ──
+r = sugar.buy_market("EURUSD", 0.01)
+r = sugar.sell_market("EURUSD", 0.01)
+r = sugar.buy_market_with_sl_tp("EURUSD", 0.01, sl: 1.0820, tp: 1.0920)
+
+# ── Pending orders ───────────────────────────────────────
+sugar.buy_limit("EURUSD", 0.01, 1.0850)
+sugar.sell_stop("EURUSD", 0.01, 1.0750)
+
+# ── Positions ────────────────────────────────────────────
+sugar.open_positions(symbol: "EURUSD")   # Array
+sugar.count_positions
+sugar.total_profit
+sugar.has_position?("EURUSD")
+sugar.close_position(ticket)
+sugar.close_all_positions
+sugar.close_all_by_symbol("EURUSD")
+sugar.modify_sl_tp(ticket, stop_loss: 1.0830, take_profit: 1.0930)
+
+# ── History (needs from_utc:) ────────────────────────────
+sugar.order_history(from_utc: Time.now.utc - 24 * 3600)
+sugar.positions_history(from_utc: Time.now.utc - 7 * 86_400)
+
+# ── Symbols & risk sizing ────────────────────────────────
+sugar.symbol_digits("EURUSD")
+sugar.symbol_point("EURUSD")
+sugar.min_stop_level("EURUSD")
+sugar.required_margin("EURUSD", 0.10, sugar.ask("EURUSD"))
+sugar.calc_profit("EURUSD", 0.10, 1.0900, 1.0950)        # type: :buy by default
+sugar.max_lot("EURUSD", sugar.ask("EURUSD"))
+
+# ── Streaming (block + Subscription) ─────────────────────
+sub = sugar.subscribe_ticks("EURUSD") { |t| puts t.bid }   # sub.cancel to stop
+n   = sugar.each_tick("EURUSD", seconds: 5) { |t| puts t.bid }  # blocking
 ```
 
-### Place pending order
+Full lists: [MT5Sugar](../MT5Sugar/MT5Sugar.API_Overview.md) · [MT5Service](../MT5Service/MT5Service.Overview.md) · [MT5Account](../MT5Account/MT5Account.Master.Overview.md).
 
-```python
-# Buy Limit with absolute price and SL/TP in pips
-ticket = await sugar.buy_limit_with_sltp("EURUSD", 0.01, price=1.0850,
-                                          sl_pips=20, tp_pips=30)
+---
 
-# Buy Stop with absolute price
-ticket = await sugar.buy_stop("EURUSD", 0.01, price=1.0950)
+## ✅ Checking a trade
 
-# Sell Limit with absolute price and SL/TP
-ticket = await sugar.sell_limit_with_sltp("EURUSD", 0.01, price=1.1050,
-                                           sl=1.1070, tp=1.1030)
+Trade one-liners **return the result data** — they don't raise on a broker rejection. Check `returned_code` (`10009` = done); a hard failure raises `MetaRPC::MT5::ApiError`:
+
+```ruby
+begin
+  r = sugar.buy_market(sym, cfg.test_volume)
+  if r.returned_code == 10_009
+    puts "opened ##{r.order} @ #{r.price}"
+  else
+    puts "rejected: #{r.returned_string_code} — #{r.returned_code_description}"
+  end
+rescue MetaRPC::MT5::ApiError => e
+  raise if e.trade_outcome_unknown?     # uncertain — check positions before retrying
+  warn "trade error: #{e.error.mql_error_trade_description}"
+end
 ```
 
-### Get open positions
+See [Return Codes & the error model](./RETURN_CODES_REFERENCE.md) for the full picture.
 
-```python
-# Sugar API
-positions = await sugar.get_open_positions()
-print(f"Open positions: {len(positions)}")
-for pos in positions:
-    print(f"  #{pos.ticket} {pos.symbol} {pos.volume:.2f} lot, "
-          f"Profit: {pos.profit:.2f}")
+---
 
-# Service API with filters
-opened_data = await service.get_opened_orders()
-positions = opened_data.position_infos
+## 📝 A complete sandbox example
+
+Risk-size a trade to ~1% of balance, open it, then report:
+
+```ruby
+Demos.register("18", "Sandbox - your own code") do |sugar, cfg|
+  sym = cfg.test_symbol
+  q   = sugar.price(sym)
+  pip = sugar.symbol_point(sym) * 10
+  dig = sugar.symbol_digits(sym)
+
+  sl  = (q.bid - 20 * pip).round(dig)                      # 20-pip stop
+  tp  = (q.ask + 40 * pip).round(dig)
+
+  loss_at_01 = -sugar.calc_profit(sym, 0.1, q.ask, sl)     # loss on 0.1 lot if stopped
+  lots = [(0.1 * (sugar.balance * 0.01) / loss_at_01).round(2), 0.01].max
+
+  if sugar.required_margin(sym, lots, q.ask) > sugar.free_margin
+    puts "  not enough free margin for #{lots} lots"
+  else
+    r = sugar.buy_market_with_sl_tp(sym, lots, sl: sl, tp: tp)
+    puts r.returned_code == 10_009 ? "  opened ##{r.order} (#{lots} lots)" : "  #{r.returned_code_description}"
+  end
+
+  puts "  open: #{sugar.count_positions}  floating P/L: #{sugar.total_profit.round(2)}"
+end
 ```
 
-### Close positions
+---
 
-```python
-# Close specific position
-await sugar.close_position(ticket)
+## 💡 Tips & common mistakes
 
-# Close all positions for symbol
-await sugar.close_all_positions("EURUSD")
+1. **Start read-only.** `sugar.balance`, `sugar.price(sym)`, `sugar.open_positions` can't hurt anything — learn the shapes first.
+2. **Trade on demo, tiny volumes.** Use `cfg.test_volume` (0.01) and confirm `sugar.demo?` before trading.
+3. **Check `returned_code`.** A returned result is *not* proof of success — `10009` is. Catching exceptions alone is not enough.
+4. **Don't re-raise an uncertain trade blindly.** On `trade_outcome_unknown?`, check `open_positions` first — the SDK never auto-resends a trade.
+5. **Enum values are symbols** (`:ACCOUNT_BALANCE`), not constants — see [ENUMs Reference](./ENUMS_USAGE_REFERENCE.md).
+6. **Unsure of a field or enum name?** Ask the [Protobuf Inspector](./PROTOBUF_INSPECTOR_GUIDE.md).
 
-# Close all positions (all symbols)
-await sugar.close_all_positions()
-```
+---
 
-### Modify position
+## See Also
 
-```python
-# Modify SL/TP
-await sugar.modify_position_sltp(ticket, sl=1.0850, tp=1.0950)
-
-# Modify only Stop Loss
-await sugar.modify_position_sl(ticket, sl=1.0850)
-
-# Modify only Take Profit
-await sugar.modify_position_tp(ticket, tp=1.0950)
-```
-
-### Calculate position size
-
-```python
-# Calculate position size based on risk
-volume = await sugar.calculate_position_size("EURUSD", risk_percent=2.0, sl_pips=20)
-print(f"Volume for 2% risk with 20 pip SL: {volume:.2f} lot")
-
-# Then use calculated volume
-ticket = await sugar.buy_market("EURUSD", volume)
-```
-
-## Return Codes (RetCodes)
-
-**Always check returned_code after trading operations!**
-
-```python
-from MetaRpcMT5.mt5_term_api_trading_helper_pb2 import OrderSendRequest
-import MetaRpcMT5.mt5_term_api_trading_helper_pb2 as pb_trading
-
-# Build request
-request = OrderSendRequest(
-    symbol="EURUSD",
-    volume=0.01,
-    operation=pb_trading.TMT5_ORDER_TYPE_BUY,
-    price=0.0,  # Market order (price will be filled by broker)
-    # ... other fields
-)
-
-result = await service.place_order(request)
-
-# Check RetCode
-if result.returned_code == 10009:  # Success for market orders
-    print(f"[OK] Order opened: #{result.order}")
-elif result.returned_code == 10008:  # Success for pending orders
-    print(f"[OK] Pending order placed: #{result.order}")
-else:
-    print(f"[X] Order failed: {result.comment} (code {result.returned_code})")
-```
-
-**Common RetCodes:**
-
-- `10009` - Market order executed successfully
-- `10008` - Pending order placed successfully
-- `10019` - Insufficient money (insufficient margin)
-- `10016` - Invalid stops (SL/TP too close to price)
-- `10018` - Market closed
-
-Full list: [RETURN_CODES_REFERENCE.md](RETURN_CODES_REFERENCE.md)
-
-## ℹ️ Error handling
-
-PyMT5 uses Python exceptions for error handling:
-
-### 1. Connection/Network errors
-
-```python
-try:
-    result = await service.place_order(request)
-except Exception as e:
-    print(f"Connection or network error: {e}")
-    return
-```
-
-### 2. Trading operation errors (RetCode)
-
-```python
-result = await service.place_order(request)
-if result.returned_code != 10009:
-    print(f"Trade rejected: {result.comment}")
-```
-
-**Always check BOTH!**
-
-### Recommended pattern:
-
-```python
-try:
-    result = await service.place_order(request)
-
-    if result.returned_code == 10009:
-        print(f"[OK] Success: Order #{result.order}")
-    else:
-        print(f"[X] Failed: {result.comment} (code: {result.returned_code})")
-
-except Exception as e:
-    print(f"[X] Error: {e}")
-```
-
-## 📝 Documentation
-
-- [MT5Account Master Overview](../API_Reference/MT5Account.md) - Complete API reference (40 methods)
-- [MT5Service Overview](../API_Reference/MT5Service.md) - Mid-level wrapper (36 methods)
-- [MT5Sugar Master Overview](../API_Reference/MT5Sugar.md) - High-level Sugar API (62+ methods)
-- [ENUMS Usage Reference](ENUMS_USAGE_REFERENCE.md) - All ENUMs in one place
-
-## 🔑 Configuration
-
-### Method 1: settings.json (Recommended)
-
-Create `examples/0_common/settings.json`:
-
-```json
-{
-  "user": 591129415,
-  "password": "YourPassword",
-  "grpc_server": "mt5.mrpc.pro:443",
-  "mt_cluster": "MetaQuotes-Demo",
-  "test_symbol": "EURUSD",
-  "test_volume": 0.01
-}
-```
-
-### Method 2: Environment variables
-
-```bash
-# Linux/Mac
-export MT5_USER=591129415
-export MT5_PASSWORD="YourPassword"
-export MT5_GRPC_SERVER="mt5.mrpc.pro:443"
-export MT5_CLUSTER="MetaQuotes-Demo"
-
-# Windows PowerShell
-$env:MT5_USER="591129415"
-$env:MT5_PASSWORD="YourPassword"
-$env:MT5_GRPC_SERVER="mt5.mrpc.pro:443"
-```
-
-See [demo_helpers.py](#) for details.
-
-## Tips
-
-1. **Start simple** - Uncomment one example at a time
-
-2. **Use Sugar API** - Methods like `buy_market_with_pips()` and 
-`calculate_position_size()` are easier than low-level
-
-3. **Check returned_code** - Always validate trading operations (10009 = success)
-
-4. **Test on demo** - Make sure you're using demo account first!
-
-5. **Read documentation** - [RETURN_CODES_REFERENCE.md](RETURN_CODES_REFERENCE.md) explains all error codes
-
-6. **Use async/await** - All methods are asynchronous
-
-7. **Type hints** - Use IDE autocomplete for better development experience
-
-8. **Check examples** - See `examples/` folder for 15+ working examples
-
-## Common mistakes
-
-[X] **Forgot to use await**
-```python
-balance = sugar.get_balance()  # DON'T forget await!
-```
-
-[+] **Always use await**
-```python
-balance = await sugar.get_balance()
-```
-
-[X] **Not checking exceptions**
-```python
-ticket = await sugar.buy_market("EURUSD", 0.01)  # No try/except!
-```
-
-[+] **Always handle exceptions**
-```python
-try:
-    ticket = await sugar.buy_market("EURUSD", 0.01)
-    print(f"Order opened: #{ticket}")
-except Exception as e:
-    print(f"Error: {e}")
-```
-
-[X] **Not checking returned_code**
-```python
-result = await service.place_order(request)
-# Assuming it's success!
-```
-
-[+] **Check returned_code for trading operations**
-```python
-result = await service.place_order(request)
-if result.returned_code != 10009:
-    print(f"Trade failed: {result.comment}")
-    return
-```
-
-## Getting help
-
-- **Protobuf types**: Check `package/MetaRpcMT5/` folder for all protobuf definitions
-- **Error codes**: See [RETURN_CODES_REFERENCE.md](RETURN_CODES_REFERENCE.md)
-- **Examples**: Check `examples/` folder for working code
-- **API documentation**: See docs folder for complete reference
-
-## Example: Complete trading strategy
-
-Here's a complete example demonstrating proper error handling:
-
-```python
-async def run_user_code():
-    """Your sandbox function - write your code here!"""
-
-    try:
-        # Load configuration
-        config = load_settings()
-    except Exception as e:
-        print(f"Config error: {e}")
-        return
-
-    try:
-        # Connect to MT5
-        account = await create_and_connect_mt5(config)
-    except Exception as e:
-        print(f"Connection error: {e}")
-        return
-
-    # Create service and sugar wrappers
-    service = MT5Service(account)
-    sugar = MT5Sugar(service, default_symbol=config.get('test_symbol', 'EURUSD'))
-
-    # Get account information
-    try:
-        balance = await sugar.get_balance()
-        print(f"Balance: {balance:.2f}")
-    except Exception as e:
-        print(f"Balance error: {e}")
-        return
-
-    # Calculate position size based on risk (1% with 50 pip SL)
-    try:
-        volume = await sugar.calculate_position_size("EURUSD",
-                                                      risk_percent=1.0,
-                                                      sl_pips=50)
-    except Exception as e:
-        print(f"Position size error: {e}")
-        return
-
-    # Open position with calculated volume
-    try:
-        ticket = await sugar.buy_market_with_pips("EURUSD", volume,
-                                                   sl_pips=50, tp_pips=100)
-        print(f"[OK] Position opened: #{ticket} with {volume:.2f} lot")
-    except Exception as e:
-        print(f"Order error: {e}")
-        return
-
-    print("Strategy execution completed!")
-
-
-if __name__ == "__main__":
-    asyncio.run(run_user_code())
-```
-
-**Happy trading!**
+- [MT5Sugar API](../MT5Sugar/MT5Sugar.API_Overview.md) · [MT5Service](../MT5Service/MT5Service.Overview.md) · [MT5Account](../MT5Account/MT5Account.Master.Overview.md)
+- [Return Codes & errors](./RETURN_CODES_REFERENCE.md) · [ENUMs Reference](./ENUMS_USAGE_REFERENCE.md) · [Protobuf Inspector](./PROTOBUF_INSPECTOR_GUIDE.md)
+- [Your First Project](./Your_First_Project.md) — a standalone script version of the same idea
