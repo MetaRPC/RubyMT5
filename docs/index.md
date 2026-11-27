@@ -1,13 +1,28 @@
 ---
+title: "MetaTrader 5 API — Ruby SDK"
 description: "MetaRPC RubyMT5 — Ruby SDK for MetaTrader 5 trading automation over gRPC. Connect, stream live ticks and positions, and execute orders from any Ruby application."
 hide:
   - navigation
   - toc
 ---
 
-# RubyMT5 SDK Documentation
+# MetaTrader 5 API — Ruby SDK
 
 > ℹ️ **Account ID / Session ID**: when connecting via `connect` / `connect_ex`, MetaRPC automatically generates a terminal session GUID and returns it in `terminal_instance_guid`. You do not need to call `get_id` or supply an `id` before connecting — subsequent calls (subscriptions, order requests) use this session id automatically.
+
+!!! info "Use the MT5 SDK with MetaRPC"
+
+    MetaRPC provides APIs and hosted terminal infrastructure for developers. Build your client on Windows, macOS or Linux; you control your broker accounts and trading decisions.
+
+    Start with the API setup guide, try the browser playground, or connect a trade-copying workflow.
+
+    [API setup and pricing](https://mrpc.pro/start/api?lang=en&utm_source=github&utm_medium=referral&utm_campaign=api_sdk_discovery&utm_content=rubymt5_setup)
+
+    [Try the API playground](https://mrpc.pro/api?lang=en&utm_source=github&utm_medium=referral&utm_campaign=api_sdk_discovery&utm_content=rubymt5_playground#live-code)
+
+    [Explore trade copying](https://mrpc.pro/start/copier?lang=en&utm_source=github&utm_medium=referral&utm_campaign=api_sdk_discovery&utm_content=rubymt5_copier)
+
+    **Preview SDK:** check this SDK’s supported methods and test your integration on a demo account before relying on it.
 
 <div class="hx-wrap" markdown="0">
 
